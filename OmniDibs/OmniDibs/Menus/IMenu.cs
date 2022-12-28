@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OmniDibs.Misc {
-    
+namespace OmniDibs.Menus {
+    public interface IMenu<E> where E : System.Enum {
+        public void DisplayMenu();
+    }
 }
