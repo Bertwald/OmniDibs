@@ -53,6 +53,8 @@ namespace OmniDibs.UI {
                 ConsoleKeyInfo key = Console.ReadKey(true);
                 if (Regex.IsMatch(key.KeyChar.ToString().ToUpperInvariant(), pattern) || key.Key == ConsoleKey.Enter) {
                     return key.Key == ConsoleKey.Enter ? Environment.NewLine : key.KeyChar.ToString();
+                } else if (key.Key == ConsoleKey.Backspace) {
+                    return key.KeyChar.ToString();
                 }
             }
         }

@@ -39,5 +39,10 @@ namespace OmniDibs.UI {
             Console.WriteLine('╚' + new string('═', width + 2) + '╝');
             Console.ResetColor();
         }
+        internal static void PrintTextCentered(string text, int centerX, int centerY, bool isHidden = false) {
+            Console.SetCursorPosition((centerX + 1 - text.Length / 2) - 1, centerY);
+            Console.Write($"{(isHidden ? new string('*', text.Length-1) + text.Last() : text)}");
+
+        }
     }
 }
