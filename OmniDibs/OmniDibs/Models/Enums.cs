@@ -17,5 +17,11 @@ namespace OmniDibs.Models {
         Update      = 0B_0010_0000,
         Delete      = 0B_1000_0001
     }
+    public enum Climate : ushort {
+        Tropical,
+        Arid,
+        Temperate,
+        Boreal
+    }
 
 }

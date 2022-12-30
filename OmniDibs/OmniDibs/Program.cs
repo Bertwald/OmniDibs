@@ -1,4 +1,5 @@
-﻿using OmniDibs.Menus;
+﻿using OmniDibs.Data;
+using OmniDibs.Menus;
 using OmniDibs.Pages;
 using OmniDibs.UI;
 
@@ -16,8 +17,12 @@ namespace OmniDibs {
             //LoginField login = new LoginField("login",1,1,12,ConsoleColor.Blue, true);
             //string name = login.GetContinousInput();
             //Console.WriteLine(name);
-            LoginPage page = new LoginPage();
-            page.Run();
+            for (int i = 0; i < 10; i++) {
+                Console.WriteLine(PersonGenerator.GetBirthDate());
+            }
+
+            //LoginPage page = new LoginPage();
+            //page.Run();
         }
     }
 }
