@@ -11,19 +11,24 @@ namespace OmniDibs.Menus {
         private int highlight = 0;
         private int maxlength;
         private int length;
+        private int _positionX;
+        private int _positionY;
         private ConsoleColor highlightColor;
         private ConsoleColor defaultColor = ConsoleColor.DarkGray;
 
-        public Menu(string title, List<string> actions, int highlight = 0, ConsoleColor highlightColor = ConsoleColor.Gray) {
+        public Menu(string title, List<string> actions, int positionX, int positionY, int highlight = 0, ConsoleColor highlightColor = ConsoleColor.Gray) {
             this.title = title;
             this.actions = actions.ToArray();
             this.highlight = highlight;
             this.highlightColor = highlightColor;
             maxlength = Math.Max(actions.Max(s => s.Length), title.Length);
             length = maxlength + 8; //Junkspaces, box and comma
+            _positionX = positionX;
+            _positionY = positionY;
         }
 
         internal void ShowNumberedActionsMenu() {
+            Console.SetCursorPosition(_positionX, _positionY);
             Console.Write('╔' + new string('═', title.Length + 2) + '╗' + Environment.NewLine + '║' + $" {title} " + "║" + Environment.NewLine + '╠' + new string('═', title.Length + 2) + '╩' + new string('═', length - title.Length - 3) + '╗' + Environment.NewLine);
             for (int index = 0; index < actions.Length; index++) {
                 Console.Write('║');
@@ -33,6 +38,9 @@ namespace OmniDibs.Menus {
                 Console.Write('║' + Environment.NewLine);
             }
             Console.WriteLine('╚' + new string('═', length) + '╝');
+        }
+
+        internal void ClearMenu() { 
         }
 
     }

@@ -46,7 +46,9 @@ namespace OmniDibs.UI {
                         input += newRead;
                     }
                     ClearField();
-                    GUI.PrintTextCentered(input, _positionX + 2 + (_length / 2), _positionY + 2, _isHidden);
+                    if (!string.IsNullOrEmpty(input)) {
+                        GUI.PrintTextCentered(input, _positionX + 2 + (_length / 2), _positionY + 2, _isHidden);
+                    }
                 }
             } while (newRead != Environment.NewLine && input.Length < _length);
             return input;

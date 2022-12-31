@@ -56,6 +56,11 @@ namespace OmniDibs.Data {
                 "Jansson",
                 "Hansson"
         };
+        private static readonly string[] domains = {
+            "@gmail.com",
+            "@hotmail.com",
+            "@qtmail.com",
+        };
         internal static string GetBirthDate() {
             DateTime birthDate = GetBirthDateTime();
             string IdentityNumber = birthDate.ToString("yyyyMMdd") + string.Join("",Enumerable.Range(1, 3).Select(s => random.Next(0,9)));
@@ -100,6 +105,9 @@ namespace OmniDibs.Data {
          */
         internal static string GetFirstName() {
             return firstnames[random.Next(firstnames.Length)];
+        }
+        internal static string GetDomain() {
+            return domains[random.Next(domains.Length)];
         }
         /**
          * Returns a swedish surname

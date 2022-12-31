@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Options;
-using OmniDibs.Models;
+﻿using OmniDibs.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace OmniDibs.Menus {
-    public class MainMenu : IMenu<Models.Privileges> {
-        private readonly string title = "Main Menu";
+    internal abstract class DefaultMenu<E> : IMenu<E> where E : System.Enum {
+        protected readonly string _title;
         private int activeChoice;
         private string[] completeMenu;
         private int numberOfChoices;
@@ -17,9 +15,9 @@ namespace OmniDibs.Menus {
         private int length;
         private ConsoleColor highlightColor = ConsoleColor.Gray;
         private ConsoleColor defaultColor = ConsoleColor.DarkGray;
-
-        public MainMenu() {
-            string[] choices = System.Enum.GetNames(typeof(Models.Privileges));
+        protected DefaultMenu(string title) {
+            _title = title;
+            string[] choices = System.Enum.GetNames(typeof(E));
             maxLength = Math.Max(choices.Max(s => s.Length), title.Length);
             length = maxLength + 8;
             numberOfChoices = choices.Length;
@@ -32,56 +30,42 @@ namespace OmniDibs.Menus {
             completeMenu = buildingMenu.ToArray();
         }
 
-        public void DisplayMenu() {
+        public virtual void DisplayMenu() {
             for (int i = 0; i < completeMenu.Length; i++) {
                 if (i < completeMenu.Length - numberOfChoices - 1 || i == completeMenu.Length - 1) {
                     Console.Write(completeMenu[i]);
                 } else {
                     Console.ResetColor();
                     Console.Write(completeMenu[i].First());
-                    Console.ForegroundColor = i == activeChoice + 1 ? highlightColor : Console.ForegroundColor = defaultColor;
+                    Console.ForegroundColor = i == activeChoice + 1 ? highlightColor : defaultColor;
                     Console.Write(completeMenu[i][1..(completeMenu[i].Length - 3)]);
                     Console.ResetColor();
                     Console.Write(completeMenu[i][(completeMenu[i].Length - 3)..(completeMenu[i].Length)]);
                 }
-
             }
         }
-
-        public ReturnType RunMenu() {
+        public virtual ReturnType RunMenu() {
             ReturnType @return;
             while (true) {
+                Console.SetCursorPosition(0, 0);
+                Console.Clear();
                 DisplayMenu();
                 @return = PerformAction(Console.ReadKey(true).Key);
-
-
             }
         }
-        private ReturnType PerformAction(ConsoleKey key) => key switch {
+        protected virtual ReturnType PerformAction(ConsoleKey key) => key switch {
             ConsoleKey.UpArrow => ChangeActiveChoice(-1),
             ConsoleKey.DownArrow => ChangeActiveChoice(1),
-            //ConsoleKey.Enter => PerformAction(Enum.TryParse<ConsoleKey>(actions[activeChoice][0].ToString(), true, out ConsoleKey highlightedAction) ? highlightedAction : ConsoleKey.Q),
+            ConsoleKey.Escape => ReturnType.HARDRETURN,
+            ConsoleKey.Backspace => ReturnType.SOFTRETURN,
+            ConsoleKey.Enter => ExecuteMappedAction(GetE(activeChoice)),
             _ => ReturnType.CONTINUE
         };
-        private ReturnType ChangeActiveChoice(int step) {
+        protected virtual ReturnType ChangeActiveChoice(int step) {
             activeChoice = (activeChoice + step + numberOfChoices) % numberOfChoices;
             return ReturnType.CONTINUE;
         }
+        protected abstract ReturnType ExecuteMappedAction(E e);
+        protected abstract E GetE(int i);
     }
 }
-
-
-
-//private static void ShowNumberedActionsMenu(string title, List<string> actions, int highlight = -1, ConsoleColor highlightColor = ConsoleColor.Gray) {
-//    var maxlength = Math.Max(actions.Max(s => s.Length), title.Length);
-//    var length = maxlength + 8; //Junkspaces, box and comma
-//    Console.Write('╔' + new string('═', title.Length + 2) + '╗' + Environment.NewLine + '║' + $" {title} " + "║" + Environment.NewLine + '╠' + new string('═', title.Length + 2) + '╩' + new string('═', length - title.Length - 3) + '╗' + Environment.NewLine);
-//    for (int index = 0; index < actions.Count; index++) {
-//        Console.Write('║');
-//        if (index == highlight) Console.ForegroundColor = highlightColor; else Console.ForegroundColor = ConsoleColor.DarkGray;
-//        Console.Write($" [{index}] : {actions[index]} " + new string(' ', maxlength - actions[index].Length));
-//        Console.ResetColor();
-//        Console.Write('║' + Environment.NewLine);
-//    }
-//    Console.WriteLine('╚' + new string('═', length) + '╝');
-//}
