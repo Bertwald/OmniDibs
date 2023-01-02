@@ -1,5 +1,7 @@
 ﻿using OmniDibs.Data;
+using OmniDibs.Logic;
 using OmniDibs.Menus;
+using OmniDibs.Models;
 using OmniDibs.Pages;
 using OmniDibs.UI;
 
@@ -30,9 +32,23 @@ namespace OmniDibs {
             //LoginPage page = new LoginPage();
             //page.Run();
             Console.CursorVisible = false;
+            //List<Person> persons = new List<Person>() { PersonGenerator.GetPerson(), PersonGenerator.GetPerson(), 
+            //    PersonGenerator.GetPerson(), PersonGenerator.GetPerson(), PersonGenerator.GetPerson(), PersonGenerator.GetPerson(), PersonGenerator.GetPerson(), };
 
-            LoginMenu2 start = new LoginMenu2();
-            start.RunMenu();
+            //Account account = PersonGenerator.GetAccount(persons.First());
+
+            DataIniter.InitData();
+            //Country country = new Country() { CountryName = "Turkey", Languages = {"Turkish","English"}, ContinentsString = "EUROPE,ASIA", Climate = Climate.TEMPERATE, BigMacIndex = 2.68F };
+            //foreach(var str in country.Languages) {
+            //    Console.WriteLine(str);
+            //}
+            //foreach (var str in country.Continents) {
+            //    Console.WriteLine(str);
+            //}
+            //Console.WriteLine($"{country.CountryName} is Located in {country.ContinentsString}");
+            //Console.WriteLine($"In {country.CountryName} common languages are {country.LanguagesString}");
+            //LoginMenu2 start = new LoginMenu2();
+            //start.RunMenu();
         }
     }
 }

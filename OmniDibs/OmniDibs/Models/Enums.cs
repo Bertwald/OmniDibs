@@ -21,7 +21,17 @@ namespace OmniDibs.Models {
         TROPICAL,
         ARID,
         TEMPERATE,
-        BOREAL
+        CONTINENTAL,
+        POLAR
+    }
+    public enum Continent {
+        ASIA,
+        AFRICA,
+        EUROPE,
+        NORTH_AMERICA,
+        SOUTH_AMERICA,
+        OCEANIA,
+        ANTARCTICA
     }
     public enum ReturnType : byte {
         CONTINUE = 0,

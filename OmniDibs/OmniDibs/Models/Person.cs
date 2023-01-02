@@ -23,7 +23,7 @@ namespace OmniDibs.Models {
         [Required]
         public string LastName { get; set; } = null!;
         [StringLength(32)]
-        public string Alias { get; set; } = null!;
+        public string? Alias { get; set; } = null!;
         [Required]
         public Country Country { get; set; } = null!;
         [Required]

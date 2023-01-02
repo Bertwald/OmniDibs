@@ -16,6 +16,19 @@ namespace OmniDibs.Data {
                     new () { BirthDate = "19831112-1367", FirstName = "Ida", LastName = "Spjut", MailAdress = "idaspjut@hotmail.com"},
                     new () { BirthDate = "19921220-1538", FirstName = "Felix", LastName = "Persson", MailAdress = "felixp@gmail.com"},
                     new () { BirthDate = "19810112-1284", FirstName = "Christina", LastName = "Holm", MailAdress = "c.holm@hotmail.com"},
+                    PersonGenerator.GetPerson(),
+                    PersonGenerator.GetPerson(),
+                    PersonGenerator.GetPerson(),
+                    PersonGenerator.GetPerson(),
+                    PersonGenerator.GetPerson(),
+                    PersonGenerator.GetPerson(),
+                    PersonGenerator.GetPerson(),
+                    PersonGenerator.GetPerson(), 
+                    PersonGenerator.GetPerson(),
+                    PersonGenerator.GetPerson(),
+                    PersonGenerator.GetPerson(),
+                    PersonGenerator.GetPerson(),
+                    new () { BirthDate = "19481232-1284", FirstName = "Rune", LastName = "Boss", MailAdress = "BigBoss@TheBoss.is", Alias = "El Bosso"},
                 };
             }
 

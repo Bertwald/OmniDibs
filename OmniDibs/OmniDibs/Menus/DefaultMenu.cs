@@ -59,6 +59,7 @@ namespace OmniDibs.Menus {
             ConsoleKey.Escape => ReturnType.HARDRETURN,
             ConsoleKey.Backspace => ReturnType.SOFTRETURN,
             ConsoleKey.Enter => ExecuteMappedAction(GetE(activeChoice)),
+            >= ConsoleKey.D0 and <= ConsoleKey.D9 => ExecuteMappedAction(GetE((int)key - 48)),
             _ => ReturnType.CONTINUE
         };
         protected virtual ReturnType ChangeActiveChoice(int step) {

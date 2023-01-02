@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OmniDibs.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -114,6 +115,19 @@ namespace OmniDibs.Data {
          */
         internal static string GetLastName() {
             return lastnames[random.Next(lastnames.Length)];
+        }
+        internal static Person GetPerson() {
+            string firstname = GetFirstName();
+            string lastname = GetLastName();
+            string Idnumber = GetBirthDate();
+            return new Person() {FirstName = firstname, LastName = lastname, BirthDate = Idnumber, 
+                                 MailAdress = firstname + "_" + lastname + Idnumber[2 .. 4] + GetDomain()};
+        }
+        internal static Account GetAccount(Person person) {
+            return new Account() { Person = person, Privileges = Privileges.USER | Privileges.READ | Privileges.UPDATE, 
+                                   UserName = person.FirstName[.. Math.Min(4, person.FirstName.Length)] + 
+                                   person.LastName[..Math.Min(4, person.LastName.Length)] + (person.BirthDate ?? "0123")[^4..], 
+                                   Password = "User00"  };
         }
         //Good luck ever obtaining an instance of this class 
         private PersonGenerator() {; }

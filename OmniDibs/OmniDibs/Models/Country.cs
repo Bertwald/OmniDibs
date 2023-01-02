@@ -10,6 +10,7 @@ namespace OmniDibs.Models {
     internal class Country {
         public Country() {
             Languages = new List<string>();
+            Continents = new List<Continent>();
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -18,13 +19,19 @@ namespace OmniDibs.Models {
         [StringLength(64)]
         public string CountryName { get; set; } = null!;
         public Climate Climate { get; set; }
+        [NotMapped]
+        public ICollection<Continent> Continents { get; set; }
+        public string ContinentsString {
+            get => string.Join(",", Continents);
+            set => Continents = value.Split(',').Select(x => Enum.Parse(typeof(Continent), x)).Cast<Continent>().ToList();
+        }
         public float BigMacIndex { get; set; }
         //SHOW: Collection in Database variant 1
         [NotMapped]
         public ICollection<string> Languages { get; set; }
         public string LanguagesString {
-            get { return string.Join(",", Languages); }
-            set { Languages = value.Split(',').ToList(); }
+            get => string.Join(",", Languages);
+            set => Languages = value.Split(',').ToList();
         }
     }
 }
