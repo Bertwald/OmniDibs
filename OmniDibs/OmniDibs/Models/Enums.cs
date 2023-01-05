@@ -42,5 +42,10 @@ namespace OmniDibs.Models {
         Login,
         Register
     }
+    public enum Standard {
+        FIRST_CLASS,
+        BUSINESS,
+        ECONOMY
+    }
 
 }

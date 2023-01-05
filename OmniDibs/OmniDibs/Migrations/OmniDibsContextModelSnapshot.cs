@@ -53,6 +53,27 @@ namespace OmniDibs.Migrations
                     b.ToTable("Accounts");
                 });
 
+            modelBuilder.Entity("OmniDibs.Models.Airplane", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Model")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Airplanes");
+                });
+
             modelBuilder.Entity("OmniDibs.Models.Booking", b =>
                 {
                     b.Property<int>("Id")
@@ -64,14 +85,11 @@ namespace OmniDibs.Migrations
                     b.Property<int?>("AccountId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Start")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Bookings", (string)null);
+                    b.ToTable("Bookings");
                 });
 
             modelBuilder.Entity("OmniDibs.Models.Country", b =>
@@ -104,6 +122,47 @@ namespace OmniDibs.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Countries");
+                });
+
+            modelBuilder.Entity("OmniDibs.Models.Flight", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("AirplaneId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Arrival")
+                        .HasColumnType("datetime2");
+
+                    b.Property<float>("BaseCost")
+                        .HasColumnType("real");
+
+                    b.Property<DateTime>("Departure")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DestinationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OriginId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AirplaneId");
+
+                    b.HasIndex("DestinationId");
+
+                    b.HasIndex("OriginId");
+
+                    b.ToTable("Flights");
                 });
 
             modelBuilder.Entity("OmniDibs.Models.Person", b =>
@@ -147,15 +206,51 @@ namespace OmniDibs.Migrations
                     b.ToTable("Persons");
                 });
 
-            modelBuilder.Entity("OmniDibs.Models.Flight", b =>
+            modelBuilder.Entity("OmniDibs.Models.Seat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("AirplaneId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Class")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsWindowSeat")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SeatNumber")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AirplaneId");
+
+                    b.ToTable("Seats");
+                });
+
+            modelBuilder.Entity("OmniDibs.Models.Ticket", b =>
                 {
                     b.HasBaseType("OmniDibs.Models.Booking");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<float>("Cost")
+                        .HasColumnType("real");
 
-                    b.ToTable("Flights", (string)null);
+                    b.Property<int>("FlightId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SeatId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("FlightId");
+
+                    b.HasIndex("SeatId");
+
+                    b.ToTable("Tickets", (string)null);
                 });
 
             modelBuilder.Entity("OmniDibs.Models.Account", b =>
@@ -176,6 +271,33 @@ namespace OmniDibs.Migrations
                         .HasForeignKey("AccountId");
                 });
 
+            modelBuilder.Entity("OmniDibs.Models.Flight", b =>
+                {
+                    b.HasOne("OmniDibs.Models.Airplane", "Airplane")
+                        .WithMany()
+                        .HasForeignKey("AirplaneId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("OmniDibs.Models.Country", "Destination")
+                        .WithMany()
+                        .HasForeignKey("DestinationId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("OmniDibs.Models.Country", "Origin")
+                        .WithMany()
+                        .HasForeignKey("OriginId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Airplane");
+
+                    b.Navigation("Destination");
+
+                    b.Navigation("Origin");
+                });
+
             modelBuilder.Entity("OmniDibs.Models.Person", b =>
                 {
                     b.HasOne("OmniDibs.Models.Country", "Country")
@@ -187,18 +309,55 @@ namespace OmniDibs.Migrations
                     b.Navigation("Country");
                 });
 
-            modelBuilder.Entity("OmniDibs.Models.Flight", b =>
+            modelBuilder.Entity("OmniDibs.Models.Seat", b =>
                 {
+                    b.HasOne("OmniDibs.Models.Airplane", "Airplane")
+                        .WithMany("Seats")
+                        .HasForeignKey("AirplaneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Airplane");
+                });
+
+            modelBuilder.Entity("OmniDibs.Models.Ticket", b =>
+                {
+                    b.HasOne("OmniDibs.Models.Flight", "Flight")
+                        .WithMany("Tickets")
+                        .HasForeignKey("FlightId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("OmniDibs.Models.Booking", null)
                         .WithOne()
-                        .HasForeignKey("OmniDibs.Models.Flight", "Id")
+                        .HasForeignKey("OmniDibs.Models.Ticket", "Id")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
+
+                    b.HasOne("OmniDibs.Models.Seat", "Seat")
+                        .WithMany()
+                        .HasForeignKey("SeatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Flight");
+
+                    b.Navigation("Seat");
                 });
 
             modelBuilder.Entity("OmniDibs.Models.Account", b =>
                 {
                     b.Navigation("Bookings");
+                });
+
+            modelBuilder.Entity("OmniDibs.Models.Airplane", b =>
+                {
+                    b.Navigation("Seats");
+                });
+
+            modelBuilder.Entity("OmniDibs.Models.Flight", b =>
+                {
+                    b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("OmniDibs.Models.Person", b =>

@@ -7,18 +7,34 @@ using System.Threading.Tasks;
 
 namespace OmniDibs.Models {
     internal class OmniDibsContext : DbContext {
-        public DbSet<Booking> Bookings { get; set; }
-        public DbSet<Account> Accounts { get; set; }
-        public DbSet<Country> Countries { get; set; }
-        public DbSet<Person> Persons { get; set; }
+        public DbSet<Account> Accounts { get; set; } = null!;
+        public DbSet<Country> Countries { get; set; } = null!;
+        public DbSet<Person> Persons { get; set; } = null!;
+        public DbSet<Flight> Flights { get; set; } = null!;
+        public DbSet<Airplane> Airplanes { get; set; } = null!;
+        public DbSet<Seat> Seats { get; set; } = null!;
+        public DbSet<Booking> Bookings { get; set; } = null!;
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
             optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=OmniDibs;Trusted_Connection=True;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
-            modelBuilder.Entity<Booking>().ToTable("Bookings");
-            modelBuilder.Entity<Flight>().ToTable("Flights");
+            modelBuilder.Entity<Ticket>().ToTable("Tickets");
+            // SHOW: Configure two way references
+            modelBuilder.Entity<Flight>()
+            .HasOne(e => e.Origin)
+            .WithMany()
+            .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Flight>()
+            .HasOne(e => e.Destination)
+            .WithMany()
+            .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Flight>()
+            .HasOne(e => e.Airplane)
+            .WithMany()
+            .OnDelete(DeleteBehavior.NoAction);
         }
         }
 }

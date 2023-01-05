@@ -8,6 +8,9 @@ using OmniDibs.UI;
 namespace OmniDibs {
     internal class Program {
         static void Main(string[] args) {
+            Console.CursorVisible = false;
+            RootPage root = new RootPage();
+            root.Run();
             //Console.WriteLine("Hello, World!");
             //MainMenu main = new MainMenu();
             //main.DisplayMenu();
@@ -31,13 +34,15 @@ namespace OmniDibs {
 
             //LoginPage page = new LoginPage();
             //page.Run();
-            Console.CursorVisible = false;
+
+
             //List<Person> persons = new List<Person>() { PersonGenerator.GetPerson(), PersonGenerator.GetPerson(), 
             //    PersonGenerator.GetPerson(), PersonGenerator.GetPerson(), PersonGenerator.GetPerson(), PersonGenerator.GetPerson(), PersonGenerator.GetPerson(), };
 
             //Account account = PersonGenerator.GetAccount(persons.First());
 
-            DataIniter.InitData();
+            //DataIniter.InitData();
+
             //Country country = new Country() { CountryName = "Turkey", Languages = {"Turkish","English"}, ContinentsString = "EUROPE,ASIA", Climate = Climate.TEMPERATE, BigMacIndex = 2.68F };
             //foreach(var str in country.Languages) {
             //    Console.WriteLine(str);

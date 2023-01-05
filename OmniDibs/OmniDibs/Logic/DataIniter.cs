@@ -32,6 +32,14 @@ namespace OmniDibs.Logic {
             foreach (var person in persons) {
                 db.Add(person);
             }
+            Account admin = new Account() {
+                Person = persons.Last(),
+                Privileges = Privileges.OWNER | Privileges.ADMIN | Privileges.CREATE | Privileges.READ | Privileges.UPDATE | Privileges.DELETE,
+                UserName = "BigBoss",
+                Password = "Admin"
+            };
+            db.Add(admin);
+            persons.Last().Accounts.Add(admin);
 
             db.SaveChanges();
         }

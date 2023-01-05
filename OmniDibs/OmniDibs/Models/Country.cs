@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace OmniDibs.Models {
-    internal class Country {
+    public class Country {
         public Country() {
             Languages = new List<string>();
             Continents = new List<Continent>();

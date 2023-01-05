@@ -64,7 +64,7 @@ namespace OmniDibs.Data {
         };
         internal static string GetBirthDate() {
             DateTime birthDate = GetBirthDateTime();
-            string IdentityNumber = birthDate.ToString("yyyyMMdd") + string.Join("",Enumerable.Range(1, 3).Select(s => random.Next(0,9)));
+            string IdentityNumber = birthDate.ToString("yyyyMMdd") + "-" + string.Join("",Enumerable.Range(1, 3).Select(s => random.Next(0,9)));
             return IdentityNumber + GetControlNumber(IdentityNumber);
         }
 
@@ -123,8 +123,8 @@ namespace OmniDibs.Data {
             return new Person() {FirstName = firstname, LastName = lastname, BirthDate = Idnumber, 
                                  MailAdress = firstname + "_" + lastname + Idnumber[2 .. 4] + GetDomain()};
         }
-        internal static Account GetAccount(Person person) {
-            return new Account() { Person = person, Privileges = Privileges.USER | Privileges.READ | Privileges.UPDATE, 
+        internal static Account GetAccount(Person person, Privileges privileges = Privileges.USER | Privileges.READ | Privileges.UPDATE) {
+            return new Account() { Person = person, Privileges = privileges, 
                                    UserName = person.FirstName[.. Math.Min(4, person.FirstName.Length)] + 
                                    person.LastName[..Math.Min(4, person.LastName.Length)] + (person.BirthDate ?? "0123")[^4..], 
                                    Password = "User00"  };
