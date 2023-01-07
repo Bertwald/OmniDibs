@@ -33,5 +33,8 @@ namespace OmniDibs.Models {
             get => string.Join(",", Languages);
             set => Languages = value.Split(',').ToList();
         }
+        public override string ToString() {
+            return CountryName;
+        }
     }
 }

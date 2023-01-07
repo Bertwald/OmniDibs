@@ -1,6 +1,8 @@
-﻿using OmniDibs.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using OmniDibs.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +15,19 @@ namespace OmniDibs.Logic {
             return account.FirstOrDefault();
 
         }
+        internal static List<T> GetListOf<T>() where T : class {
+            using OmniDibsContext context = new();
+            return context.Set<T>().ToList();
+        }
+        internal static ImmutableList<T> GetImmutableListOf<T>() where T : class {
+            using OmniDibsContext context = new();
+            return context.Set<T>().ToImmutableList();
+        }
 
         internal static void AddToDatabase<T>(T item) where T : class {
             using OmniDibsContext context = new();
+            //HACK: Attach fixes "Cannot insert explicit value for identity" when object has references to other tracked items
+            context.Attach(item);
             context.Add<T>(item);
             context.SaveChanges();
         }

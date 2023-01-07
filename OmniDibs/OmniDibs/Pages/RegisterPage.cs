@@ -1,5 +1,8 @@
-﻿using OmniDibs.Data;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using OmniDibs.Data;
 using OmniDibs.Interfaces;
+using OmniDibs.Logic;
+using OmniDibs.Menus;
 using OmniDibs.Models;
 using OmniDibs.UI;
 using System;
@@ -59,8 +62,13 @@ namespace OmniDibs.Pages {
                 string id= _idNumber.GetContinousInput();
                 bool verified = VerifyIdNumber(id);
                 if (verified) {
-                    Person accountOwner = new() {FirstName = firstname, LastName = lastname, Alias = alias, BirthDate = DateTime.Now.ToString(), Country =  };
-                    Console.WriteLine("IDNUMBER OK");
+                    Country? country = ItemSelectorMenu<Country>.SelectDatabaseItemFromMenu();
+                    Person accountOwner = new() {FirstName = firstname, LastName = lastname, Alias = alias, BirthDate = id, Country = country, MailAdress = email };
+                    Account account = new() {UserName=username, Password=password, Privileges = Privileges.USER | Privileges.READ | Privileges.UPDATE, Person = accountOwner};
+                    accountOwner.Accounts.Add(account);
+                    //DatabaseInterface.AddToDatabase<Person>(accountOwner);
+                    DatabaseInterface.AddToDatabase<Account>(account);
+                    Console.WriteLine(country);
                 } else {
                     Console.WriteLine("IDNUMBER AOK");
                 }
@@ -70,17 +78,13 @@ namespace OmniDibs.Pages {
             return ReturnType.CONTINUE;
         }
 
-        private void ClearWindow() {
+        private static void ClearWindow() {
             Console.Clear();
             GUI.printWindow("|OmniDibs Account Creation Step 1/2|", 0, 0, 100, 20);
         }
 
         private bool VerifyIdNumber(string idNumber) {
-            bool isCorrectLength = VerifyIdLength(idNumber);
-            bool isCorrectFormat = VerifyIdFormat(idNumber);
-            bool hasValidChecksum = VerifyIdChecksum(idNumber);
-            bool isValidDate = VerifyIdDate(idNumber);
-            return isCorrectLength && isCorrectFormat && hasValidChecksum && isValidDate;
+            return VerifyIdLength(idNumber) && VerifyIdFormat(idNumber) && VerifyIdChecksum(idNumber) && VerifyIdDate(idNumber);
         }
 
         private static bool VerifyIdDate(string idNumber) {
