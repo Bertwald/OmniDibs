@@ -68,10 +68,10 @@ namespace OmniDibs.Data {
             return IdentityNumber + GetControlNumber(IdentityNumber);
         }
 
-        private static int GetControlNumber(string identityNumber) {
-            int[] numbers = CharArrayToIntArray(identityNumber.Reverse().ToArray());
+        internal static int GetControlNumber(string identityNumber) {
+            int[] numbers = CharArrayToIntArray(identityNumber.Replace("-", String.Empty)[2..11].Reverse().ToArray());
             string control = "";
-            for (int index = 0; index < 9; index++) {
+            for (int index = 0; index < numbers.Length; index++) {
                 control += (2 - index % 2) * numbers[index];
             }
             numbers = CharArrayToIntArray(control.ToArray());

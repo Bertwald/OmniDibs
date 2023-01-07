@@ -1,10 +1,12 @@
-﻿using OmniDibs.Interfaces;
+﻿using OmniDibs.Data;
+using OmniDibs.Interfaces;
 using OmniDibs.Models;
 using OmniDibs.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace OmniDibs.Pages {
@@ -16,6 +18,7 @@ namespace OmniDibs.Pages {
         private InputField _firstname;
         private InputField _lastname;
         private InputField _alias;
+        private InputField _idNumber;
 
         internal RegisterPage() {
             _userField = new InputField("Username", 5, 2, 12, ConsoleColor.White, false);
@@ -26,6 +29,9 @@ namespace OmniDibs.Pages {
             _emailField = new InputField("Mail", 5, 14, 24, ConsoleColor.White, false);
             _emailField.SetInputPattern(@"[A-Z0-9-_@.]");
             _alias = new InputField("Alias", 65, 8, 12, ConsoleColor.White, false);
+
+            _idNumber = new InputField("YYYYMMDD-XXXX", 5, 2, 13);
+            _idNumber.SetInputPattern(@"[0-9-]");
 
         }
         public ReturnType Run() {
@@ -47,11 +53,49 @@ namespace OmniDibs.Pages {
             string alias = _alias.GetContinousInput();
             string email = _emailField.GetContinousInput();
 
-            Console.ReadKey();
-            //while (true) {
+            if (password.Equals(passwordcheck)) {
+                ClearWindow();
+                _idNumber.PrintField();
+                string id= _idNumber.GetContinousInput();
+                bool verified = VerifyIdNumber(id);
+                if (verified) {
+                    Person accountOwner = new() {FirstName = firstname, LastName = lastname, Alias = alias, BirthDate = DateTime.Now.ToString(), Country =  };
+                    Console.WriteLine("IDNUMBER OK");
+                } else {
+                    Console.WriteLine("IDNUMBER AOK");
+                }
 
-            //}
+            }
+            Console.ReadKey();
             return ReturnType.CONTINUE;
+        }
+
+        private void ClearWindow() {
+            Console.Clear();
+            GUI.printWindow("|OmniDibs Account Creation Step 1/2|", 0, 0, 100, 20);
+        }
+
+        private bool VerifyIdNumber(string idNumber) {
+            bool isCorrectLength = VerifyIdLength(idNumber);
+            bool isCorrectFormat = VerifyIdFormat(idNumber);
+            bool hasValidChecksum = VerifyIdChecksum(idNumber);
+            bool isValidDate = VerifyIdDate(idNumber);
+            return isCorrectLength && isCorrectFormat && hasValidChecksum && isValidDate;
+        }
+
+        private static bool VerifyIdDate(string idNumber) {
+            return DateTime.TryParse(idNumber[0..4] + "-" + idNumber[4..6] + "-" + idNumber[6..8], out _);
+        }
+
+        private static bool VerifyIdChecksum(string idNumber) {
+            return (int)Char.GetNumericValue(idNumber.Last()) == PersonGenerator.GetControlNumber(idNumber[0..13]);
+        }
+        private static bool VerifyIdFormat(string idNumber) {
+            string format = @"[0-9]{8}-[0-9]{4}";
+            return Regex.IsMatch(idNumber,format);
+        }
+        private static bool VerifyIdLength(string idNumber) {
+            return idNumber.Length == 13;
         }
     }
 }

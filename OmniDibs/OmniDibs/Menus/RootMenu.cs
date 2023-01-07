@@ -13,7 +13,8 @@ namespace OmniDibs.Menus {
 
         protected override ReturnType ExecuteMappedAction(LoginOptions e) => e switch {
             LoginOptions.Login => (new LoginPage()).Run(),
-            LoginOptions.Register => (new RegisterPage().Run())
+            LoginOptions.Register => (new RegisterPage().Run()),
+            _ => ReturnType.CONTINUE
         };
 
         protected override LoginOptions GetE(int i) => i switch {
