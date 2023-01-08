@@ -63,7 +63,7 @@ namespace OmniDibs.Data {
             "@qtmail.com",
         };
         internal static string GetBirthDate() {
-            DateTime birthDate = GetBirthDateTime();
+            DateTime birthDate = GetRandomDateInRange( DateTime.Today, new(1920, 01, 01));
             string IdentityNumber = birthDate.ToString("yyyyMMdd") + "-" + string.Join("",Enumerable.Range(1, 3).Select(s => random.Next(0,9)));
             return IdentityNumber + GetControlNumber(IdentityNumber);
         }
@@ -85,9 +85,7 @@ namespace OmniDibs.Data {
             return Array.ConvertAll(array, c => (int)Char.GetNumericValue(c));
         }
 
-        private static DateTime GetBirthDateTime() {
-            DateTime endDate = DateTime.Now;
-            DateTime startDate = new(1920,01,01);
+        public static DateTime GetRandomDateInRange(DateTime endDate, DateTime startDate) {
             TimeSpan timeSpan = endDate - startDate;
             TimeSpan newSpan = new (0, random.Next(0, (int)timeSpan.TotalMinutes), 0);
             DateTime birthDate = startDate + newSpan;

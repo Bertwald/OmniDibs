@@ -17,46 +17,6 @@ namespace OmniDibs.Models {
         public abstract DateTime? EndDate { get; }
         internal abstract string GetBookingInfo();
     }
-    public class Flight {
-        internal Flight() {
-            Tickets = new HashSet<Ticket>();
-        }
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        public string Name { get; internal set; } = null!;
-        public DateTime Departure { get; internal set; }
-        public DateTime Arrival { get; internal set; }
-        [Column]
-        public Country Origin { get; internal set; } = null!;
-        [Column]
-        public Country Destination { get; internal set; } = null!;
-        [Column]
-        public Airplane Airplane { get; internal set; } = null!;
-        public float BaseCost { get; internal set; }
-        public ISet<Ticket> Tickets { get; internal set; }
-    }
-    public class Airplane {
-        public Airplane() {
-            Seats = new HashSet<Seat>();
-        }
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        public string Name { get; internal set; }
-        public string Model { get; internal set; }
-        public ISet<Seat> Seats { get; internal set; }
-
-    }
-    public class Seat {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        public int SeatNumber { get; internal set; }
-        public bool IsWindowSeat { get; internal set; }
-        public Standard Class { get; internal set; }
-        public Airplane Airplane { get; internal set; } = null!;
-    }
     [Table("Tickets")]
     public class Ticket : Booking {
         //[Key]
@@ -69,7 +29,7 @@ namespace OmniDibs.Models {
         public override DateTime? EndDate { get => Flight.Arrival; }
 
         internal override string GetBookingInfo() {
-            return $"Flight Ticket to {Flight.Destination} on {Flight.Name} {Seat.SeatNumber}: {Seat.Class}";
+            return $"Flight Ticket to {Flight.Destination} on {Flight.Name} {Seat.SeatNumber}: {Seat.Class} cost {Cost}§";
         }
     }
 }
