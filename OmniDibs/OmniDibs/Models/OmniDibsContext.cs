@@ -15,6 +15,7 @@ namespace OmniDibs.Models {
         public DbSet<Airplane> Airplanes { get; set; } = null!;
         public DbSet<Seat> Seats { get; set; } = null!;
         public DbSet<Booking> Bookings { get; set; } = null!;
+        public DbSet<AirplaneBooking> AirplaneBookings { get; set; } = null!;
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
@@ -24,6 +25,10 @@ namespace OmniDibs.Models {
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             modelBuilder.Entity<Ticket>().ToTable("Tickets");
             modelBuilder.Entity<AirplaneBooking>().ToTable("AirPlaneBookings");
+            modelBuilder.Entity<Ticket>().Navigation(e => e.Seat).AutoInclude();
+            modelBuilder.Entity<Ticket>().Navigation(e => e.Flight).AutoInclude();
+            modelBuilder.Entity<AirplaneBooking>().Navigation(e => e.Airplane).AutoInclude();
+            modelBuilder.Entity<Airplane>().Navigation(e => e.Seats).AutoInclude();
 
             // SHOW: Configure two way references
             modelBuilder.Entity<Flight>()

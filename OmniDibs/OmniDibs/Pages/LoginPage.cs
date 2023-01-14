@@ -29,18 +29,11 @@ namespace OmniDibs.Pages {
                 Console.Clear();
                 GUI.printWindow("|OmniDibs System Login|", 0, 0, 100, 20);
                 GUI.printLogo(17, 2);
-
                 _userField.PrintField();
                 _passwordField.PrintField();
                 string username = _userField.GetContinousInput();
                 string password = _passwordField.GetContinousInput();
                 Account? user = DatabaseInterface.VerifyLogin(username, password);
-                if (user != null) {
-                    Console.Clear();
-                    Console.SetCursorPosition(0, 0);
-                    Console.WriteLine($"Welcome {user.Privileges} : {user.UserName} {user.Password}");
-                    Console.ReadKey();
-                }
                 return user != null ? Redirect(user) : ReturnType.CONTINUE;
             }
         }

@@ -1,4 +1,5 @@
-﻿using OmniDibs.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using OmniDibs.Data;
 using OmniDibs.Models;
 using System;
 using System.Collections.Generic;
@@ -56,6 +57,43 @@ namespace OmniDibs.Logic {
             using var db = new OmniDibsContext();
             List<Airplane> airplanes = AirplaneManager.GetAirplanes();
             db.AddRange(airplanes);
+            db.SaveChanges();
+        }
+
+        public static void InitCharters() {
+            using var db = new OmniDibsContext();
+            List<Airplane> airplanes = db.Airplanes.Where(x => true).Include(x => x.Seats).ToList();
+            List<Account> accounts = db.Accounts.ToList();
+            List<AirplaneBooking> charters = new List<AirplaneBooking>();
+
+            var days = Enumerable.Range(0, DateTime.DaysInMonth(2023, 2)).Select(x => new DateTime(2023, 2, 1 + x));
+            foreach(DateTime day in days) {
+                if (random.Next(0, 100) < 80) {
+                    AirplaneBooking newBooking = new AirplaneBooking {
+                        Airplane = airplanes.First(),
+                        OrderAccount = accounts[random.Next(0, accounts.Count)],
+                        Cost = airplanes.First().Seats.Count * 20000,
+                        StartDate = day,
+                        EndDate = day
+                    };
+                    charters.Add(newBooking);
+                }
+                if (random.Next(0, 100) < 65) {
+                    AirplaneBooking newBooking = new AirplaneBooking {
+                        Airplane = airplanes.Last(),
+                        OrderAccount = accounts[random.Next(0, accounts.Count)],
+                        Cost = airplanes.Last().Seats.Count * 5000,
+                        StartDate = day,
+                        EndDate = day
+                    };
+                    charters.Add(newBooking);
+                }
+            }
+            foreach(var booking in charters) {
+                booking.OrderAccount.Bookings.Add(booking);
+            }
+            db.AttachRange(accounts);
+            db.AddRange(charters);
             db.SaveChanges();
         }
     }

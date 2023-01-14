@@ -44,6 +44,7 @@ namespace OmniDibs.Models {
     }
     public enum BookingAlternatives {
         Display_Bookings,
+        Remove_a_Booking,
         Make_a_Booking,
         Account_Details,
         Logout

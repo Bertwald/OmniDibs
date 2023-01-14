@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,7 +14,7 @@ namespace OmniDibs.Logic {
             using OmniDibsContext context = new();
             var account = context.Accounts
                                  .Where(x => x.UserName
-                                              .Equals(username) && 
+                                              .Equals(username) &&
                                              x.Password
                                               .Equals(password))
                                  .Include(x => x.Person)
@@ -38,10 +39,11 @@ namespace OmniDibs.Logic {
             context.Add<T>(item);
             context.SaveChanges();
         }
-        internal static void RemoveFromDatabase<T>(T item) where T : class {
+        internal static bool RemoveFromDatabase<T>(T item) where T : class {
             using OmniDibsContext context = new();
             context.Remove<T>(item);
-            context.SaveChanges();
+            int affected = context.SaveChanges();
+            return affected != 0;
         }
         internal static void UpdateInDatabase<T>(T item) where T : class {
             using OmniDibsContext context = new();
@@ -52,6 +54,24 @@ namespace OmniDibs.Logic {
             using OmniDibsContext context = new();
             T? alts = context.Find<T>(key);
             return alts;
+        }
+
+        internal static ISet<Booking> GetBookings(Account account) {
+            using (OmniDibsContext context = new()) {
+                HashSet<Booking> bookings = new HashSet<Booking>();
+                if (account.Bookings.Any()) {
+                    var charters = context.AirplaneBookings.Where(x => x.OrderAccount.Equals(account)).Include(x => x.Airplane).ThenInclude(x => x.Seats).ToList();
+                    var tickets = context.Bookings.Where(x => x.OrderAccount.Equals(account) && x is Ticket).ToList();
+                    foreach (var x in charters) {
+                        bookings.Add(x);
+                    }
+                    foreach (var x in tickets) {
+                        bookings.Add(x);
+                    }
+                    return bookings;
+                }
+                return account.Bookings;
+            }
         }
     }
 }
