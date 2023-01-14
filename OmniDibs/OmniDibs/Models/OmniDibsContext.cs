@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,6 +23,8 @@ namespace OmniDibs.Models {
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             modelBuilder.Entity<Ticket>().ToTable("Tickets");
+            modelBuilder.Entity<AirplaneBooking>().ToTable("AirPlaneBookings");
+
             // SHOW: Configure two way references
             modelBuilder.Entity<Flight>()
             .HasOne(e => e.Origin)
@@ -35,6 +38,9 @@ namespace OmniDibs.Models {
             .HasOne(e => e.Airplane)
             .WithMany()
             .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Account>()
+            .HasIndex(b => b.UserName)
+            .IsUnique();
         }
-        }
+    }
 }

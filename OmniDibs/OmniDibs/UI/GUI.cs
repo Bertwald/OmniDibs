@@ -44,5 +44,18 @@ namespace OmniDibs.UI {
             Console.Write($"{(isHidden ? new string('*', text.Length-1) + text.Last() : text)}");
 
         }
+
+        internal static void ClearWindow() {
+            Console.Clear();
+        }
+
+        internal static void PromtUserInput() {
+            Console.WriteLine("Press ANY key to Continue");
+            Console.ReadKey();
+        }
+
+        internal static void PrintPropertyPair(string name, string? v) {
+            Console.WriteLine($"{name} \t : \t {v}");
+        }
     }
 }

@@ -50,6 +50,7 @@ namespace OmniDibs.UI {
                     } else {
                         input += newRead;
                     }
+                    Console.CursorVisible = false;
                     ClearField();
                     if (!string.IsNullOrEmpty(input)) {
                         GUI.PrintTextCentered(input, _positionX + 2 + (_length / 2), _positionY + 2, _isHidden);

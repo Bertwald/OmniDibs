@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OmniDibs.Models;
 
@@ -11,9 +12,10 @@ using OmniDibs.Models;
 namespace OmniDibs.Migrations
 {
     [DbContext(typeof(OmniDibsContext))]
-    partial class OmniDibsContextModelSnapshot : ModelSnapshot
+    [Migration("20230112071946_AirCraftBooking")]
+    partial class AirCraftBooking
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,18 +238,6 @@ namespace OmniDibs.Migrations
                     b.ToTable("Seats");
                 });
 
-            modelBuilder.Entity("OmniDibs.Models.AirplaneBooking", b =>
-                {
-                    b.HasBaseType("OmniDibs.Models.Booking");
-
-                    b.Property<int>("AirplaneId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("AirplaneId");
-
-                    b.ToTable("AirPlaneBookings", (string)null);
-                });
-
             modelBuilder.Entity("OmniDibs.Models.Ticket", b =>
                 {
                     b.HasBaseType("OmniDibs.Models.Booking");
@@ -330,23 +320,6 @@ namespace OmniDibs.Migrations
                         .WithMany("Seats")
                         .HasForeignKey("AirplaneId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Airplane");
-                });
-
-            modelBuilder.Entity("OmniDibs.Models.AirplaneBooking", b =>
-                {
-                    b.HasOne("OmniDibs.Models.Airplane", "Airplane")
-                        .WithMany()
-                        .HasForeignKey("AirplaneId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OmniDibs.Models.Booking", null)
-                        .WithOne()
-                        .HasForeignKey("OmniDibs.Models.AirplaneBooking", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("Airplane");

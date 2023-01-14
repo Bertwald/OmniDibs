@@ -11,7 +11,14 @@ namespace OmniDibs.Logic {
     internal class DatabaseInterface {
         internal static Account? VerifyLogin(string username, string password) {
             using OmniDibsContext context = new();
-            var account = context.Accounts.Where(x => x.UserName.Equals(username) && x.Password.Equals(password));
+            var account = context.Accounts
+                                 .Where(x => x.UserName
+                                              .Equals(username) && 
+                                             x.Password
+                                              .Equals(password))
+                                 .Include(x => x.Person)
+                                 .ThenInclude(x => x.Country)
+                                 .Include(x => x.Bookings);
             return account.FirstOrDefault();
 
         }

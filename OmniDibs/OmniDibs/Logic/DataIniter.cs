@@ -43,5 +43,20 @@ namespace OmniDibs.Logic {
 
             db.SaveChanges();
         }
+
+        public static void InitFlights() {
+            using var db = new OmniDibsContext();
+            List<Flight> flights = FlightManager.GetFlights();
+            db.AttachRange(flights);
+            db.AddRange(flights);
+            db.SaveChanges();
+        }
+
+        public static void InitPlanes() {
+            using var db = new OmniDibsContext();
+            List<Airplane> airplanes = AirplaneManager.GetAirplanes();
+            db.AddRange(airplanes);
+            db.SaveChanges();
+        }
     }
 }

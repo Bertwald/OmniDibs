@@ -15,7 +15,7 @@ namespace OmniDibs.Models {
         CREATE      = 0B_0100_0000,
         READ        = 0B_0001_0000,
         UPDATE      = 0B_0010_0000,
-        DELETE      = 0B_1000_0001
+        DELETE      = 0B_1000_0000
     }
     public enum Climate : byte {
         TROPICAL,
@@ -41,6 +41,18 @@ namespace OmniDibs.Models {
     public enum LoginOptions {
         Login,
         Register
+    }
+    public enum BookingAlternatives {
+        Display_Bookings,
+        Make_a_Booking,
+        Account_Details,
+        Logout
+    }
+    public enum AdminAlternatives {
+        Booking_Statistics,
+        Customer_Statistics,
+        Business_Configurations,
+        Handle_Accounts
     }
     public enum Standard {
         FIRST_CLASS,

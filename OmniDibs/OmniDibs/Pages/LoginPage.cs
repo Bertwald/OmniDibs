@@ -25,28 +25,34 @@ namespace OmniDibs.Pages {
         }
 
         public ReturnType Run() {
-            Console.Clear();
-            GUI.printWindow("|OmniDibs System Login|", 0, 0, 100, 20);
-            GUI.printLogo(17, 2);
-
-            _userField.PrintField();
-            _passwordField.PrintField();
-            string username = _userField.GetContinousInput();
-            string password = _passwordField.GetContinousInput();
-            Account? user = DatabaseInterface.VerifyLogin(username, password);
-            if (user != null) {
+            while (true) {
                 Console.Clear();
-                Console.SetCursorPosition(0, 0);
-                Console.WriteLine($"Welcome {user.Privileges} : {user.UserName} {user.Password}");
-                Console.ReadKey();
+                GUI.printWindow("|OmniDibs System Login|", 0, 0, 100, 20);
+                GUI.printLogo(17, 2);
+
+                _userField.PrintField();
+                _passwordField.PrintField();
+                string username = _userField.GetContinousInput();
+                string password = _passwordField.GetContinousInput();
+                Account? user = DatabaseInterface.VerifyLogin(username, password);
+                if (user != null) {
+                    Console.Clear();
+                    Console.SetCursorPosition(0, 0);
+                    Console.WriteLine($"Welcome {user.Privileges} : {user.UserName} {user.Password}");
+                    Console.ReadKey();
+                }
+                return user != null ? Redirect(user) : ReturnType.CONTINUE;
             }
-            return user != null ? Redirect(user) : ReturnType.CONTINUE;
         }
 
-        internal ReturnType Redirect(Account user) => user.Privileges switch {
-            Privileges.USER => (new BookingPage(user)).Run(),
-            Privileges.ADMIN => (new AdminPage(user)).Run(),
-            _ => ReturnType.CONTINUE,
-        };
+        internal static ReturnType Redirect(Account user) {
+            if (user.Privileges.HasFlag(Privileges.USER)) {
+                return (new BookingPage(user)).Run();
+            } else if (user.Privileges.HasFlag(Privileges.ADMIN)) {
+                return (new AdminPage(user)).Run();
+            } else {
+                return ReturnType.CONTINUE;
+            }
+        }
     }
 }

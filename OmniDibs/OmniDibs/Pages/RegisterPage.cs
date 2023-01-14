@@ -33,7 +33,7 @@ namespace OmniDibs.Pages {
             _emailField.SetInputPattern(@"[A-Z0-9-_@.]");
             _alias = new InputField("Alias", 65, 8, 12, ConsoleColor.White, false);
 
-            _idNumber = new InputField("YYYYMMDD-XXXX", 5, 2, 13);
+            _idNumber = new InputField("YYYYMMDD-XXXX", 5, 2, 13, ConsoleColor.White, false);
             _idNumber.SetInputPattern(@"[0-9-]");
 
         }

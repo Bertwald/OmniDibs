@@ -8,9 +8,13 @@ using OmniDibs.UI;
 namespace OmniDibs {
     internal class Program {
         static void Main(string[] args) {
+            //ClassCreator.CreateFromInput<Person>();
+
             Console.CursorVisible = false;
             RootPage root = new RootPage();
             root.Run();
+
+
             //Console.WriteLine("Hello, World!");
             //MainMenu main = new MainMenu();
             //main.DisplayMenu();

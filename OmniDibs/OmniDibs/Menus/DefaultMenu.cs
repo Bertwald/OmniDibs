@@ -18,11 +18,13 @@ namespace OmniDibs.Menus {
         protected DefaultMenu(string title) {
             _title = title;
             string[] choices = System.Enum.GetNames(typeof(E));
+            choices = choices.Select(x => x.Replace('_', ' ')).ToArray();
             maxLength = Math.Max(choices.Max(s => s.Length), title.Length);
             length = maxLength + 8;
             numberOfChoices = choices.Length;
             List<string> buildingMenu = new();
-            buildingMenu.Add(('╔' + new string('═', title.Length + 2) + '╗' + Environment.NewLine + '║' + $" {title} " + "║" + Environment.NewLine + '╠' + new string('═', title.Length + 2) + '╩' + new string('═', length - title.Length - 3) + '╗') + Environment.NewLine);
+            buildingMenu.Add(('╔' + new string('═', title.Length + 2) + '╗' + Environment.NewLine + '║' + $" {title} " + "║" + Environment.NewLine + 
+                              '╠' + new string('═', title.Length + 2) + '╩' + new string('═', length - title.Length - 3) + '╗') + Environment.NewLine);
             for (int index = 0; index < choices.Length; index++) {
                 buildingMenu.Add($"║ [{index}] : {choices[index]} " + new string(' ', maxLength - choices[index].Length) + '║' + Environment.NewLine);
             }
