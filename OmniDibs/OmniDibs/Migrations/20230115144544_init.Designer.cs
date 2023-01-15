@@ -12,8 +12,8 @@ using OmniDibs.Models;
 namespace OmniDibs.Migrations
 {
     [DbContext(typeof(OmniDibsContext))]
-    [Migration("20230114164748_bookings")]
-    partial class bookings
+    [Migration("20230115144544_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -292,9 +292,11 @@ namespace OmniDibs.Migrations
 
             modelBuilder.Entity("OmniDibs.Models.Booking", b =>
                 {
-                    b.HasOne("OmniDibs.Models.Account", null)
+                    b.HasOne("OmniDibs.Models.Account", "Account")
                         .WithMany("Bookings")
                         .HasForeignKey("AccountId");
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("OmniDibs.Models.Flight", b =>

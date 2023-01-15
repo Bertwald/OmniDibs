@@ -23,7 +23,8 @@ namespace OmniDibs.Menus {
             length = maxLength + 8;
             numberOfChoices = choices.Length;
             List<string> buildingMenu = new();
-            buildingMenu.Add(('╔' + new string('═', title.Length + 2) + '╗' + Environment.NewLine + '║' + $" {title} " + "║" + Environment.NewLine + 
+            buildingMenu.Add(('╔' + new string('═', title.Length + 2) + '╗' + Environment.NewLine + 
+                              '║' +             $" {title} " +          "║" + Environment.NewLine + 
                               '╠' + new string('═', title.Length + 2) + '╩' + new string('═', length - title.Length - 3) + '╗') + Environment.NewLine);
             for (int index = 0; index < choices.Length; index++) {
                 buildingMenu.Add($"║ [{index}] : {choices[index]} " + new string(' ', maxLength - choices[index].Length) + '║' + Environment.NewLine);
@@ -47,13 +48,14 @@ namespace OmniDibs.Menus {
             }
         }
         public virtual ReturnType RunMenu() {
-            ReturnType @return;
-            while (true) {
+            ReturnType @return = ReturnType.CONTINUE;
+            while (@return == ReturnType.CONTINUE) {
                 Console.SetCursorPosition(0, 0);
                 Console.Clear();
                 DisplayMenu();
                 @return = PerformAction(Console.ReadKey(true).Key);
             }
+            return @return == ReturnType.HARDRETURN ? ReturnType.HARDRETURN : ReturnType.CONTINUE;
         }
         protected virtual ReturnType PerformAction(ConsoleKey key) => key switch {
             ConsoleKey.UpArrow => ChangeActiveChoice(-1),

@@ -46,7 +46,10 @@ namespace OmniDibs {
             //Account account = PersonGenerator.GetAccount(persons.First());
 
             //DataIniter.InitData();
+            //DataIniter.InitPlanes();
+            //DataIniter.InitFlights();
             //DataIniter.InitCharters();
+            //DataIniter.InitTickets();
 
             //Country country = new Country() { CountryName = "Turkey", Languages = {"Turkish","English"}, ContinentsString = "EUROPE,ASIA", Climate = Climate.TEMPERATE, BigMacIndex = 2.68F };
             //foreach(var str in country.Languages) {

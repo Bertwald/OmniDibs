@@ -290,9 +290,11 @@ namespace OmniDibs.Migrations
 
             modelBuilder.Entity("OmniDibs.Models.Booking", b =>
                 {
-                    b.HasOne("OmniDibs.Models.Account", null)
+                    b.HasOne("OmniDibs.Models.Account", "Account")
                         .WithMany("Bookings")
                         .HasForeignKey("AccountId");
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("OmniDibs.Models.Flight", b =>

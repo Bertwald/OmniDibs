@@ -20,7 +20,8 @@ namespace OmniDibs.Menus {
             this.highlight = highlight;
             this.highlightColor = highlightColor;
             maxlength = Math.Max(actions.Max(s => s.Length), title.Length);
-            length = maxlength + 8; //Junkspaces, box and comma
+            int extraLength = ((int)Math.Log10(actions.Count())); //For very large Lists
+            length = maxlength + 8 + extraLength; //Junkspaces, box and comma
         }
         internal void ShowNumberedActionsMenu() {
             Console.SetCursorPosition(0, 0);

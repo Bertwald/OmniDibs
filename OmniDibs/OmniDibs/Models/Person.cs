@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace OmniDibs.Models {
-    internal class Person {
+    public class Person {
         public Person() {
             Accounts = new HashSet<Account>();
         }

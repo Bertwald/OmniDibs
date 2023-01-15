@@ -52,6 +52,14 @@ namespace OmniDibs.Logic {
             db.AddRange(flights);
             db.SaveChanges();
         }
+        public static void InitTickets() {
+            using var db = new OmniDibsContext();
+            List<Flight> flights = db.Flights.Include(x => x.Airplane).ThenInclude(x => x.Seats).ToList();
+            List<Ticket> tickets = TicketGenerator.GenerateTicketsForFlights(flights);
+            db.AttachRange(flights);
+            db.AddRange(tickets);
+            db.SaveChanges();
+        }
 
         public static void InitPlanes() {
             using var db = new OmniDibsContext();
@@ -71,7 +79,7 @@ namespace OmniDibs.Logic {
                 if (random.Next(0, 100) < 80) {
                     AirplaneBooking newBooking = new AirplaneBooking {
                         Airplane = airplanes.First(),
-                        OrderAccount = accounts[random.Next(0, accounts.Count)],
+                        Account = accounts[random.Next(0, accounts.Count)],
                         Cost = airplanes.First().Seats.Count * 20000,
                         StartDate = day,
                         EndDate = day
@@ -81,7 +89,7 @@ namespace OmniDibs.Logic {
                 if (random.Next(0, 100) < 65) {
                     AirplaneBooking newBooking = new AirplaneBooking {
                         Airplane = airplanes.Last(),
-                        OrderAccount = accounts[random.Next(0, accounts.Count)],
+                        Account = accounts[random.Next(0, accounts.Count)],
                         Cost = airplanes.Last().Seats.Count * 5000,
                         StartDate = day,
                         EndDate = day
@@ -90,7 +98,7 @@ namespace OmniDibs.Logic {
                 }
             }
             foreach(var booking in charters) {
-                booking.OrderAccount.Bookings.Add(booking);
+                booking.Account.Bookings.Add(booking);
             }
             db.AttachRange(accounts);
             db.AddRange(charters);

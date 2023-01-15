@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using OmniDibs.Logic;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,11 +14,12 @@ namespace OmniDibs.Models {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        internal Account OrderAccount { get; set; } = null!;
+        public Account? Account { get; set; } = null!;
         //[NotMapped]
         //public abstract float Cost { get; internal set; }
         public abstract DateTime StartDate { get; set; }
         public abstract DateTime EndDate { get; set; }
+        internal abstract bool Unbook(); 
         internal abstract string GetBookingInfo();
         internal abstract float GetCost();
         public override string ToString() {
@@ -32,8 +34,12 @@ namespace OmniDibs.Models {
         public Flight Flight { get; internal set; } = null!;
         public float Cost { get; internal set; }
         public Seat Seat { get; internal set; } = null!;
-        public override DateTime StartDate { get => Flight.Departure; set { } }
-        public override DateTime EndDate { get => Flight.Arrival; set { } }
+        [NotMapped]
+        private DateTime _startDate;
+        [NotMapped]
+        private DateTime _endDate;
+        public override DateTime StartDate { get => _startDate; set { _startDate = value; } }
+        public override DateTime EndDate { get => _endDate; set { _endDate = value; } }
 
         internal override string GetBookingInfo() {
             return $"Flight Ticket to {Flight.Destination} on {Flight.Name} {Seat.SeatNumber}: {Seat.Class} cost {Cost}§";
@@ -41,6 +47,12 @@ namespace OmniDibs.Models {
 
         internal override float GetCost() {
             return Cost;
+        }
+
+        internal override bool Unbook() {
+            base.Account = null!;
+            DatabaseInterface.UpdateInDatabase(this);
+            return true;
         }
     }
 
@@ -62,6 +74,10 @@ namespace OmniDibs.Models {
 
         internal override float GetCost() {
             return Cost * (1 + (StartDate.Date - EndDate.Date).Days);
+        }
+
+        internal override bool Unbook() {
+            return DatabaseInterface.RemoveFromDatabase(this);
         }
     }
 }

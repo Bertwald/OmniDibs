@@ -20,5 +20,9 @@ namespace OmniDibs.Models {
         public Airplane Airplane { get; internal set; } = null!;
         public float BaseCost { get; internal set; }
         public ISet<Ticket> Tickets { get; internal set; }
+
+        public override string ToString() {
+            return $"{Name}: {Origin}-{Destination} {Departure:yyyy/MM/dd}";
+        }
     }
 }

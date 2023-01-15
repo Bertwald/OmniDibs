@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace OmniDibs.Migrations
 {
-    public partial class Initial : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -148,7 +148,9 @@ namespace OmniDibs.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountId = table.Column<int>(type: "int", nullable: true)
+                    AccountId = table.Column<int>(type: "int", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -157,6 +159,30 @@ namespace OmniDibs.Migrations
                         name: "FK_Bookings_Accounts_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Accounts",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AirPlaneBookings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    AirplaneId = table.Column<int>(type: "int", nullable: false),
+                    Cost = table.Column<float>(type: "real", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AirPlaneBookings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AirPlaneBookings_Airplanes_AirplaneId",
+                        column: x => x.AirplaneId,
+                        principalTable: "Airplanes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AirPlaneBookings_Bookings_Id",
+                        column: x => x.Id,
+                        principalTable: "Bookings",
                         principalColumn: "Id");
                 });
 
@@ -195,6 +221,17 @@ namespace OmniDibs.Migrations
                 name: "IX_Accounts_PersonId",
                 table: "Accounts",
                 column: "PersonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Accounts_UserName",
+                table: "Accounts",
+                column: "UserName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AirPlaneBookings_AirplaneId",
+                table: "AirPlaneBookings",
+                column: "AirplaneId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_AccountId",
@@ -239,6 +276,9 @@ namespace OmniDibs.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AirPlaneBookings");
+
             migrationBuilder.DropTable(
                 name: "Tickets");
 

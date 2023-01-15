@@ -28,9 +28,10 @@ namespace OmniDibs.Data {
             foreach (var flight in ret) {
                 int h = random.Next(1, 10);
                 flight.Arrival = flight.Departure.AddHours(h);
+                /*
                 foreach (Seat seat in flight.Airplane.Seats) {
                     flight.Tickets.Add(new() { Flight = flight, Seat = seat, Cost = flight.BaseCost * (1.0f - (0.2f * (float)seat.Class)) });
-                }
+                }*/
             }
             return ret;
         }

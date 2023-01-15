@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace OmniDibs.Models
 {
-    internal class Account {
+    public class Account {
         public Account() {
             Bookings = new HashSet<Booking>();
         }

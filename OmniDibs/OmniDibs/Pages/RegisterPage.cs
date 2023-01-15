@@ -66,9 +66,7 @@ namespace OmniDibs.Pages {
                     Person accountOwner = new() {FirstName = firstname, LastName = lastname, Alias = alias, BirthDate = id, Country = country, MailAdress = email };
                     Account account = new() {UserName=username, Password=password, Privileges = Privileges.USER | Privileges.READ | Privileges.UPDATE, Person = accountOwner};
                     accountOwner.Accounts.Add(account);
-                    //DatabaseInterface.AddToDatabase<Person>(accountOwner);
                     DatabaseInterface.AddToDatabase<Account>(account);
-                    Console.WriteLine(country);
                 } else {
                     Console.WriteLine("IDNUMBER AOK");
                 }
