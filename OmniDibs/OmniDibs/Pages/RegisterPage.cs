@@ -62,7 +62,7 @@ namespace OmniDibs.Pages {
                 string id= _idNumber.GetContinousInput();
                 bool verified = VerifyIdNumber(id);
                 if (verified) {
-                    Country? country = ItemSelectorMenu<Country>.SelectDatabaseItemFromMenu();
+                    Country? country = ItemSelector<Country>.SelectDatabaseItemFromMenu();
                     Person accountOwner = new() {FirstName = firstname, LastName = lastname, Alias = alias, BirthDate = id, Country = country, MailAdress = email };
                     Account account = new() {UserName=username, Password=password, Privileges = Privileges.USER | Privileges.READ | Privileges.UPDATE, Person = accountOwner};
                     accountOwner.Accounts.Add(account);

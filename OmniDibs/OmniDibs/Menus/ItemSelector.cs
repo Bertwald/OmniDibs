@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace OmniDibs.Menus {
-    internal class ItemSelectorMenu<T> where T : class {
+    internal class ItemSelector<T> where T : class {
         internal static T? SelectDatabaseItemFromMenu() {
             var items = DatabaseInterface.GetImmutableListOf<T>();
             if(items == null || !items.Any()) {

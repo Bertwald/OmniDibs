@@ -62,14 +62,34 @@ namespace OmniDibs.UI {
             int length = Math.Max(title.Length, list.Select(x => x.Length).Max()) + 2;
             int leftFillerLength = (length - title.Length) / 2;
             var position = Console.GetCursorPosition();
-            Console.Write(new string('-', leftFillerLength) + title + new string('-', length-title.Length-leftFillerLength));
-            for(int row = 0; row < list.Count; row++) {
-                Console.SetCursorPosition(position.Left, position.Top + row+1);
+            Console.Write(new string('-', leftFillerLength) + title + new string('-', length - title.Length - leftFillerLength));
+            for (int row = 0; row < list.Count; row++) {
+                Console.SetCursorPosition(position.Left, position.Top + row + 1);
                 Console.Write(list[row]);
             }
-            Console.SetCursorPosition(position.Left, Console.GetCursorPosition().Top +2);
+            Console.SetCursorPosition(position.Left, Console.GetCursorPosition().Top + 2);
             Console.Write(new string('-', length));
             Console.SetCursorPosition(position.Left, Console.GetCursorPosition().Top + 1);
+        }
+
+        internal static void PrintBookingDays(string startMonth, int daysInMonth, List<int> availableDays) {
+            Console.WriteLine("Bookings for " + startMonth);
+            for (int day = 1; day <= daysInMonth; day++) {
+                if (availableDays.Contains(day)) {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write($"{day} : Available    ");
+                } else {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write($"{day} : Not Available");
+                }
+                if (day % 5 == 0) {
+                    Console.WriteLine();
+                } else {
+                    Console.Write("\t");
+                }
+            }
+            Console.WriteLine();
+            Console.ResetColor();
         }
     }
 }

@@ -13,5 +13,9 @@ namespace OmniDibs.Models {
         public string Model { get; internal set; }
         public ISet<Seat> Seats { get; internal set; }
 
+        public override string ToString() {
+            return $"{Name} {Model} {(Seats.Any()?Seats.Count: null)}";
+        }
+
     }
 }

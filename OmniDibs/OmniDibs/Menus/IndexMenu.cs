@@ -12,6 +12,7 @@ namespace OmniDibs.Menus {
         private int highlight = 0;
         private int maxlength;
         private int length;
+        private int extraLength;
         private ConsoleColor highlightColor;
         private ConsoleColor defaultColor = ConsoleColor.DarkGray;
         public IndexMenu(string title, List<string> actions, int highlight = 0, ConsoleColor highlightColor = ConsoleColor.Gray) {
@@ -20,7 +21,7 @@ namespace OmniDibs.Menus {
             this.highlight = highlight;
             this.highlightColor = highlightColor;
             maxlength = Math.Max(actions.Max(s => s.Length), title.Length);
-            int extraLength = ((int)Math.Log10(actions.Count())); //For very large Lists
+            extraLength = ((int)Math.Log10(actions.Count())); //For very large Lists
             length = maxlength + 8 + extraLength; //Junkspaces, box and comma
         }
         internal void ShowNumberedActionsMenu() {
@@ -29,7 +30,7 @@ namespace OmniDibs.Menus {
             for (int index = 0; index < actions.Length; index++) {
                 Console.Write('║');
                 Console.ForegroundColor = index == highlight? highlightColor : Console.ForegroundColor = defaultColor;
-                Console.Write($" [{index}] : {actions[index]} " + new string(' ', maxlength - actions[index].Length));
+                Console.Write($" [{index}] : {actions[index]} " + new string(' ', length - 7 - index.ToString().Length - actions[index].Length));
                 Console.ResetColor();
                 Console.Write('║' + Environment.NewLine);
             }
