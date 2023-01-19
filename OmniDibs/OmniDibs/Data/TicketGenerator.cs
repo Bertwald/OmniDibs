@@ -2,7 +2,7 @@
 
 namespace OmniDibs.Data {
     internal class TicketGenerator {
-        public static List<Ticket> GenerateTicketsForFlights(List<Flight> flights) {
+        internal static List<Ticket> GenerateTicketsForFlights(List<Flight> flights) {
             List<Ticket> tickets = new ();
             foreach (Flight flight in flights) {
                 tickets.AddRange(GenerateTicketsForFlight(flight));
@@ -10,7 +10,7 @@ namespace OmniDibs.Data {
             return tickets;
         }
 
-        private static List<Ticket> GenerateTicketsForFlight(Flight flight) {
+        internal static List<Ticket> GenerateTicketsForFlight(Flight flight) {
             List<Ticket> tickets = new ();
             foreach (Seat seat in flight.Airplane.Seats) {
                 tickets.Add(new() { Flight = flight, 

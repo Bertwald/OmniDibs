@@ -77,7 +77,6 @@ namespace OmniDibs.Logic {
         internal static ISet<Booking> GetBookings(Account account) {
             HashSet<Booking> bookings = new HashSet<Booking>();
             using (OmniDibsContext context = new()) {
-                if (account.Bookings.Any()) {
                     var charters = context.AirplaneBookings.Where(x => x.Account.Equals(account)).Include(x => x.Airplane).ThenInclude(x => x.Seats).ToList();
                     var tickets = context.Tickets.Include(x => x.Flight).Where(x => x.Account.Equals(account)).ToList();
                     foreach (var x in charters) {
@@ -86,7 +85,6 @@ namespace OmniDibs.Logic {
                     foreach (var x in tickets) {
                         bookings.Add(x);
                     }
-                }
                 context.Dispose();
             }
             return bookings;

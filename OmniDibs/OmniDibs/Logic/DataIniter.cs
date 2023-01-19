@@ -48,7 +48,7 @@ namespace OmniDibs.Logic {
         }
         public static void InitTickets() {
             using var db = new OmniDibsContext();
-            List<Flight> flights = db.Flights.Include(x => x.Airplane).ThenInclude(x => x.Seats).Include(x => x.Departure).Include(x => x.Arrival).ToList();
+            List<Flight> flights = db.Flights.Include(x => x.Airplane).ThenInclude(x => x.Seats).ToList();
             List<Ticket> tickets = TicketGenerator.GenerateTicketsForFlights(flights);
             db.AttachRange(flights);
             db.AddRange(tickets);

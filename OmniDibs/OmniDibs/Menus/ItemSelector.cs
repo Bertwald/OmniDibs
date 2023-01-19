@@ -20,11 +20,11 @@ namespace OmniDibs.Menus {
             return items[index];
         }
 
-        internal static T? SelectItemFromList(List<T> items) {
+        internal static T? SelectItemFromList(List<T> items, string msg = "") {
             if (items == null || !items.Any()) {
                 return null;
             }
-            IndexMenu indexMenu = new(typeof(T).Name,
+            IndexMenu indexMenu = new( msg == "" ? typeof(T).Name: msg,
                                        items.Select(x => x.ToString()).ToList()!,
                                        0);
             int index = indexMenu.RunMenu();

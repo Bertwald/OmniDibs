@@ -146,7 +146,7 @@ namespace OmniDibs.Pages {
             int startDay, endDay;
             //There is a 13th "null" month in MonthNames array, we only need 12 here
             List<string> months = (DateTimeFormatInfo.InvariantInfo.MonthNames).Take(12).ToList();
-            string startMonth = ItemSelector<string>.SelectItemFromList(months);
+            string startMonth = ItemSelector<string>.SelectItemFromList(months, "Month");
             int monthNumber = ((int)Enum.Parse(typeof(Month), startMonth));
             List<int> availableDays;
             availableDays = GetAvailableDaysInMonth(plane, monthNumber);
@@ -217,7 +217,13 @@ namespace OmniDibs.Pages {
             var destination = ChooseAvailableDestination(flights);
             var flight = SelectFlight(flights, destination);
             var tickets = SelectSeatOptions(flight);
-            var booking = SelectTicket(tickets);
+            Ticket? booking;
+            if (tickets.Any()) {
+                booking = SelectTicket(tickets);
+            } else {
+                booking = null;
+                Console.WriteLine("");
+            }
 
             return booking;
         }
@@ -294,7 +300,12 @@ namespace OmniDibs.Pages {
         }
 
         private ReturnType RemoveBooking() {
-            Booking booking = ItemSelector<Booking>.SelectItemFromList(_account.Bookings.ToList())!;
+            Booking? booking = null;
+            using (var db = new OmniDibsContext()) {
+                var bookings = db.Bookings.Where(x => x.Account == _account).ToList();
+                booking = ItemSelector<Booking>.SelectItemFromList(bookings)!;
+                db.Dispose();
+            }
             if ((booking?.Unbook()).HasValue) {
                 _account.Bookings.Remove(booking!);
             }

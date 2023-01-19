@@ -28,5 +28,9 @@ namespace OmniDibs.Models
         public ISet<Booking> Bookings { get; set; }
         [Required]
         public Person Person { get; set; } = null!;
+
+        public override string ToString() {
+            return "Id:"+Id + "  UserName:" + UserName;
+        }
     }
 }

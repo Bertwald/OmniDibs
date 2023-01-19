@@ -1,4 +1,6 @@
 ﻿
+using OmniDibs.Menus;
+
 namespace OmniDibs.UI {
     internal class GUI {
         private static string[] _logo = {
@@ -85,6 +87,15 @@ namespace OmniDibs.UI {
             }
             Console.WriteLine();
             Console.ResetColor();
+        }
+
+        internal static bool Confirm(string action) {
+            GUI.ClearWindow();
+            var answer = ItemSelector<string>.SelectItemFromList(new List<string> {"YES", "NO" }, "Confirm");
+            if(answer == "YES") {
+                return true;
+            }
+            return false;
         }
     }
 }
