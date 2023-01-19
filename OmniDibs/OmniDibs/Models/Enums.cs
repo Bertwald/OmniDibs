@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace OmniDibs.Models {
     [Flags]
     public enum Privileges : byte {
@@ -53,7 +48,8 @@ namespace OmniDibs.Models {
         Booking_Statistics,
         Customer_Statistics,
         Business_Configurations,
-        Handle_Accounts
+        Handle_Accounts,
+        Logout
     }
     public enum Standard {
         FIRST_CLASS,

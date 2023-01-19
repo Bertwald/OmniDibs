@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
+using OmniDibs.Interfaces;
 using OmniDibs.Models;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OmniDibs.Menus {
+namespace OmniDibs.Menus
+{
     public class MainMenu : IMenu<Models.Privileges> {
         private readonly string title = "Main Menu";
         private int activeChoice;

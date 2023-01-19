@@ -1,11 +1,13 @@
-﻿using OmniDibs.Models;
+﻿using OmniDibs.Interfaces;
+using OmniDibs.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OmniDibs.Menus {
+namespace OmniDibs.Menus
+{
     internal class LoginMenu : IMenu<LoginOptions> {
         private readonly string title = "LoginMenu";
         private int activeChoice;

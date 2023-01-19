@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace OmniDibs.UI {
     internal class GUI {
-        private static string[] _Logo = {
+        private static string[] _logo = {
                 " #######  #     #  #     #  ###         ######   ###  ######    #####  ",
                 " #     #  ##   ##  ##    #   #          #     #   #   #     #  #     # ",
                 " #     #  # # # #  # #   #   #          #     #   #   #     #  #       ",
@@ -19,9 +14,9 @@ namespace OmniDibs.UI {
             Console.SetCursorPosition(positionX, positionY);
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.Yellow;
-            for (int line = 0; line < _Logo.Length; line++) {
+            for (int line = 0; line < _logo.Length; line++) {
                 Console.SetCursorPosition(positionX, positionY + line);
-                Console.Write(_Logo[line]);
+                Console.Write(_logo[line]);
             }
             Console.ResetColor();
 
@@ -49,7 +44,7 @@ namespace OmniDibs.UI {
             Console.Clear();
         }
 
-        internal static void PromtUserInput() {
+        internal static void Delay() {
             Console.WriteLine("Press ANY key to Continue");
             Console.ReadKey();
         }

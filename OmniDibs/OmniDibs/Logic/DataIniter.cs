@@ -1,22 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OmniDibs.Data;
 using OmniDibs.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OmniDibs.Logic {
     internal class DataIniter {
-        private static Random random= new Random();
+        private static Random _random= new Random();
         public static void InitData() {
             List<Person> persons = PersonManager.GetAllPersons();
             List<Country> countries = CountryManager.GetCountries();
             List<Account> accounts = new();
             foreach (Person person in persons) {
-                Country country = countries[random.Next()%countries.Count];
+                Country country = countries[_random.Next()%countries.Count];
                 person.Country = country;
                 Account account = PersonGenerator.GetAccount(person);
                 person.Accounts.Add(account);
@@ -54,7 +48,7 @@ namespace OmniDibs.Logic {
         }
         public static void InitTickets() {
             using var db = new OmniDibsContext();
-            List<Flight> flights = db.Flights.Include(x => x.Airplane).ThenInclude(x => x.Seats).ToList();
+            List<Flight> flights = db.Flights.Include(x => x.Airplane).ThenInclude(x => x.Seats).Include(x => x.Departure).Include(x => x.Arrival).ToList();
             List<Ticket> tickets = TicketGenerator.GenerateTicketsForFlights(flights);
             db.AttachRange(flights);
             db.AddRange(tickets);
@@ -76,20 +70,20 @@ namespace OmniDibs.Logic {
 
             var days = Enumerable.Range(0, DateTime.DaysInMonth(2023, 2)).Select(x => new DateTime(2023, 2, 1 + x));
             foreach(DateTime day in days) {
-                if (random.Next(0, 100) < 80) {
+                if (_random.Next(0, 100) < 80) {
                     AirplaneBooking newBooking = new AirplaneBooking {
                         Airplane = airplanes.First(),
-                        Account = accounts[random.Next(0, accounts.Count)],
+                        Account = accounts[_random.Next(0, accounts.Count)],
                         Cost = airplanes.First().Seats.Count * 20000,
                         StartDate = day,
                         EndDate = day
                     };
                     charters.Add(newBooking);
                 }
-                if (random.Next(0, 100) < 65) {
+                if (_random.Next(0, 100) < 65) {
                     AirplaneBooking newBooking = new AirplaneBooking {
                         Airplane = airplanes.Last(),
-                        Account = accounts[random.Next(0, accounts.Count)],
+                        Account = accounts[_random.Next(0, accounts.Count)],
                         Cost = airplanes.Last().Seats.Count * 5000,
                         StartDate = day,
                         EndDate = day

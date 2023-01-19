@@ -15,13 +15,10 @@ namespace OmniDibs.Pages {
 
         private InputField _userField;
         private InputField _passwordField;
-        //private Menu _menu;
-        //private List<string> actions = new List<string>() { "Login", "Register" };
 
         internal LoginPage() {
             _userField = new InputField("Username", 45, 10, 12, ConsoleColor.White, false);
             _passwordField = new InputField("Password", 45, 15, 12, ConsoleColor.White, true);
-            //_menu = new Menu("User Login", actions, 45, 10);
         }
 
         public ReturnType Run() {
@@ -33,7 +30,7 @@ namespace OmniDibs.Pages {
                 _passwordField.PrintField();
                 string username = _userField.GetContinousInput();
                 string password = _passwordField.GetContinousInput();
-                Account? user = DatabaseInterface.VerifyLogin(username, password);
+                Account? user = DatabaseFacade.VerifyLogin(username, password);
                 return user != null ? Redirect(user) : ReturnType.CONTINUE;
             }
         }

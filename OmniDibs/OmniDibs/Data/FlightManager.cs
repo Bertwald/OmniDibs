@@ -10,8 +10,8 @@ namespace OmniDibs.Data {
     internal class FlightManager {
         private static readonly Random random = new();
         internal static List<Flight> GetFlights() {
-            List<Country> countries = DatabaseInterface.GetListOf<Country>();
-            List<Airplane> airplanes = DatabaseInterface.GetListOf<Airplane>();
+            List<Country> countries = DatabaseFacade.GetListOf<Country>();
+            List<Airplane> airplanes = DatabaseFacade.GetListOf<Airplane>();
             var ret = new List<Flight>() {
                 new Flight() { Name = "CAF1337", BaseCost = 56000, Departure = PersonGenerator.GetRandomDateInRange(new (2023,04,30),new (2023,02,01)), Destination = countries.Where(x => x.CountryName.Equals("Antarctica")).Single(), Origin = countries.Where(x => x.CountryName.Equals("Sweden")).Single()},
                 new Flight() { Name = "RAF007", BaseCost = 1500, Departure = PersonGenerator.GetRandomDateInRange(new (2023,04,30),new (2023,02,01)), Destination = countries.Where(x => x.CountryName.Equals("England")).Single(), Origin = countries.Where(x => x.CountryName.Equals("Sweden")).Single()},

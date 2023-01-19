@@ -1,15 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OmniDibs.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OmniDibs.Logic {
-    internal class DatabaseInterface {
+    internal class DatabaseFacade {
         internal static Account? VerifyLogin(string username, string password) {
             Account? account;
             using (OmniDibsContext context = new()) {
@@ -20,7 +14,6 @@ namespace OmniDibs.Logic {
                                                   .Equals(password))
                                      .Include(x => x.Person)
                                      .ThenInclude(x => x.Country)
-                                     .Include(x => x.Bookings)
                                      .AsNoTracking()
                                      .FirstOrDefault();
                 context.Dispose();

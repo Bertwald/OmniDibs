@@ -4,16 +4,8 @@ using OmniDibs.Logic;
 using OmniDibs.Menus;
 using OmniDibs.Models;
 using OmniDibs.UI;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.ExceptionServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using static Dapper.SqlMapper;
 
 namespace OmniDibs.Pages {
     internal class BookingPage : DefaultMenu<BookingAlternatives>, IRunnable {
@@ -39,7 +31,7 @@ namespace OmniDibs.Pages {
             while (true) {
                 GUI.ClearWindow();
                 GUI.printWindow($"| {_title} |", 0, 0, 100, 20);
-                return this.RunMenu();
+                return RunMenu();
             }
         }
 
@@ -70,7 +62,7 @@ namespace OmniDibs.Pages {
             GUI.PrintList(Compress(accountResult), "Account Information");
             Console.SetCursorPosition(3, 9);
             GUI.PrintList(Compress(personResult), "Personal Information");
-            GUI.PromtUserInput();
+            GUI.Delay();
             return ReturnType.CONTINUE;
         }
 
@@ -92,7 +84,7 @@ namespace OmniDibs.Pages {
             return result;
         }
         private ReturnType DisplayBookings() {
-            var bookings = _account.Bookings; //DatabaseInterface.GetBookings(_account);
+            var bookings = DatabaseFacade.GetBookings(_account);
             GUI.ClearWindow();
             GUI.printWindow($"| Account Details |", 0, 0, 100, 25);
             Console.SetCursorPosition(3, 3);
@@ -103,17 +95,10 @@ namespace OmniDibs.Pages {
             Console.SetCursorPosition(Console.GetCursorPosition().Left + 40, Console.GetCursorPosition().Top + 2);
             Console.Write($"Grand Total : {bookings.Sum(x => x.GetCost())} §");
             Console.SetCursorPosition(3, Console.GetCursorPosition().Top + 2);
-            GUI.PromtUserInput();
+            GUI.Delay();
             return ReturnType.CONTINUE;
         }
         private ReturnType MakeBooking() {
-
-            //var bookables = from assembly in AppDomain.CurrentDomain.GetAssemblies()
-            //                from type in assembly.GetTypes()
-            //                where type.IsSubclassOf(typeof(Booking))
-            //                select type.Name;
-            //var bookingType = ItemSelectorMenu<string>.SelectItemFromList(bookables.ToList());
-
             var bookables = new List<Booking> { new Ticket(), new AirplaneBooking() };
             IndexMenu indexMenu = new(typeof(Booking).Name,
                                        bookables.Select(x => x.GetType().Name).ToList()!,
@@ -131,10 +116,30 @@ namespace OmniDibs.Pages {
 
         private Booking? MakeAirPlaneBooking() {
             var plane = ChoosePlane();
-            var dates = ChooseDate(plane);
-
-            Console.ReadKey(true);
+            (DateTime start, DateTime end) = ChooseDate(plane);
+            if(start == DateTime.MinValue || end == DateTime.MinValue) {
+                GUI.ClearWindow();
+                Console.WriteLine($"Sorry, no Available dates for {plane.Name + " : " + plane.Model} on chosen month");
+                GUI.Delay();
+                return null;
+            }
+            BookPlaneBetweenDates(plane, start, end);
             return null;
+        }
+
+        private void BookPlaneBetweenDates(Airplane plane, DateTime start, DateTime end) {
+            using (var db = new OmniDibsContext()) {
+                var account = db.Accounts.First(x => x.Id == _account.Id);
+                var airplane = db.Airplanes.Include(x => x.Seats).First(x => x.Id == plane.Id);
+                AirplaneBooking booking = new AirplaneBooking() { Account = account, 
+                                                                  Airplane = airplane, 
+                                                                  StartDate = start, 
+                                                                  EndDate = end, 
+                                                                  Cost = (float) (airplane.Seats.Count*15000 * (1 + (end-start).TotalDays )) };
+                account.Bookings.Add(booking);
+                db.Add(booking);
+                db.SaveChanges();
+            }
         }
 
         private (DateTime start, DateTime end) ChooseDate(Airplane plane) {
@@ -143,61 +148,67 @@ namespace OmniDibs.Pages {
             List<string> months = (DateTimeFormatInfo.InvariantInfo.MonthNames).Take(12).ToList();
             string startMonth = ItemSelector<string>.SelectItemFromList(months);
             int monthNumber = ((int)Enum.Parse(typeof(Month), startMonth));
-            var days = Enumerable.Range(1, DateTime.DaysInMonth(2023, monthNumber))
-                        .Select(x => x);
+            List<int> availableDays;
+            availableDays = GetAvailableDaysInMonth(plane, monthNumber);
+            if (!availableDays.Any()) {
+                return (DateTime.MinValue, DateTime.MinValue);
+            }
+            startDay = SelectDay($"From which available day do you want to charter the {plane.Model}", startMonth, monthNumber, availableDays);
+            availableDays = GetListOfContigous(startDay, monthNumber, availableDays);
+            endDay = SelectDay($"On which day do you want the booking to end", startMonth, monthNumber, availableDays);
+            return (new DateTime(2023, monthNumber, startDay), new DateTime(2023, monthNumber, endDay));
+        }
+
+        private static List<int> GetAvailableDaysInMonth(Airplane plane, int monthNumber) {
+            var days = Enumerable.Range(1, DateTime.DaysInMonth(2023, monthNumber));
             List<int> availableDays;
             using (var db = new OmniDibsContext()) {
-                var flightRanges = db.Flights.Where(x => x.Airplane == plane && x.Departure.Month == monthNumber).Select(x => Enumerable.Range(CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.Departure),
-                                                                           Math.Max(1,CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.Arrival) - 
-                                                                           CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.Departure))))
-                    .ToList();
-                var bookingRanges = db.AirplaneBookings.Where(x => x.Airplane == plane && x.StartDate.Month == monthNumber).Select(x => Enumerable.Range(CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.StartDate),
-                                                                           Math.Max(1, CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.EndDate) -
-                                                                           CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.StartDate)))).ToList();
-                foreach(var range in flightRanges) {
+                var usedByFlight = db.Flights.Where(x => x.Airplane == plane && x.Departure.Month == monthNumber).Select(x => Enumerable.Range(CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.Departure),
+                                                                           1 + CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.Arrival) -
+                                                                           CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.Departure))).ToList();
+                var daysBooked = db.AirplaneBookings.Where(x => x.Airplane == plane && x.StartDate.Month == monthNumber).Select(x => Enumerable.Range(CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.StartDate),
+                                                                           1 + CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.EndDate) -
+                                                                           CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.StartDate))).ToList();
+                foreach (var range in usedByFlight) {
                     days = days.Except(range);
                 }
-                foreach(var range in bookingRanges) {
+                foreach (var range in daysBooked) {
                     days = days.Except(range);
                 }
                 availableDays = days.ToList();
             }
+            return availableDays;
+        }
 
-            GUI.PrintBookingDays(startMonth, DateTime.DaysInMonth(2023, monthNumber), availableDays);
-            Console.WriteLine($"From which available day do you want to charter the {plane.Model}");
-            Console.Write("Choice: ");
-            startDay = InputModule.GetValidatedInt(availableDays);
-
+        private static List<int> GetListOfContigous(int start, int monthNumber, List<int> available) {
             int offset = 0;
-            for(int day = startDay; day < DateTime.DaysInMonth(2023, monthNumber); day++) {
-                if (!availableDays.Contains(day)) {
+            for (int day = start; day < DateTime.DaysInMonth(2023, monthNumber); day++) {
+                if (!available.Contains(day)) {
                     break;
                 }
                 offset++;
             }
-            availableDays = availableDays.Where(x => x >= startDay && x <= startDay + offset).ToList();
+            available = available.Where(x => x >= start && x <= start + offset).ToList();
+            return available;
+        }
 
-
+        private static int SelectDay(string choiceString, string startMonth, int monthNumber, List<int> availableDays) {
+            int startDay;
+            GUI.ClearWindow();
             GUI.PrintBookingDays(startMonth, DateTime.DaysInMonth(2023, monthNumber), availableDays);
-            Console.WriteLine($"Select available end for charter of the {plane.Model} (Charter can only be made in contigous periods on same month, do multiple charters to get longer bookings or cover month transitions)");
+            Console.WriteLine(choiceString);
             Console.Write("Choice: ");
-            endDay = InputModule.GetValidatedInt(availableDays);
-            return (new DateTime(2023, monthNumber, startDay), new DateTime(2023, monthNumber, endDay));
-
+            startDay = InputModule.GetValidatedInt(availableDays);
+            return startDay;
         }
 
         private Airplane ChoosePlane() {
-            //List<Airplane> airplanes = new();
-            //using (var db = new OmniDibsContext()) {
-            //    airplanes = db.Airplanes.AsNoTracking().ToList();
-            //    db.Dispose();
-            //}
             Airplane chosenPlane = ItemSelector<Airplane>.SelectDatabaseItemFromMenu();
             return chosenPlane;
         }
 
         private Booking? MakeTicketBooking() {
-            List<Flight> flights; // = DatabaseInterface.GetListOf<Flight>();
+            List<Flight> flights;
             using (var db = new OmniDibsContext()) {
                 flights = db.Flights.Include(x => x.Origin).Include(x => x.Destination).AsNoTracking().ToList();
                 db.Dispose();
@@ -207,11 +218,6 @@ namespace OmniDibs.Pages {
             var flight = SelectFlight(flights, destination);
             var tickets = SelectSeatOptions(flight);
             var booking = SelectTicket(tickets);
-
-            //if(booking != null) {
-            //    _account.Bookings.Add(booking);
-            //    DatabaseInterface.UpdateInDatabase(booking);
-            //}
 
             return booking;
         }
@@ -225,14 +231,6 @@ namespace OmniDibs.Pages {
                                        0);
             int choice = indexMenu.RunMenu();
 
-            //if(choice == 0) {
-            //    chosen.Account = _account;
-            //    DatabaseInterface.UpdateInDatabase(chosen);
-            //    _account.Bookings.Add(chosen);
-            //    return chosen;
-            //} else {
-            //    return null;
-            //}
             Ticket? newTicket;
             if (choice == 1) {
                 return null;
@@ -282,7 +280,7 @@ namespace OmniDibs.Pages {
             return tickets;
         }
 
-        private Flight SelectFlight(List<Flight> flights, Country destination) {
+        private Flight? SelectFlight(List<Flight> flights, Country destination) {
             flights = flights.Where(f => f.Destination == destination).ToList();
             return ItemSelector<Flight>.SelectItemFromList(flights);
         }

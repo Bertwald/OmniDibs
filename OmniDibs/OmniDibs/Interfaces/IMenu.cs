@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OmniDibs.Menus {
-    internal interface IMenu<E> where E : System.Enum {
+namespace OmniDibs.Interfaces
+{
+    internal interface IMenu<E> where E : Enum
+    {
         internal void DisplayMenu();
         internal ReturnType RunMenu();
     }

@@ -1,13 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using OmniDibs.Logic;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OmniDibs.Models {
     public abstract class Booking {
@@ -15,8 +7,6 @@ namespace OmniDibs.Models {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public Account? Account { get; set; } = null!;
-        //[NotMapped]
-        //public abstract float Cost { get; internal set; }
         public abstract DateTime StartDate { get; set; }
         public abstract DateTime EndDate { get; set; }
         internal abstract bool Unbook(); 
@@ -28,9 +18,6 @@ namespace OmniDibs.Models {
     }
     [Table("Tickets")]
     public class Ticket : Booking {
-        //[Key]
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        //public int TicketId { get; set; }
         public Flight Flight { get; internal set; } = null!;
         public float Cost { get; internal set; }
         public Seat Seat { get; internal set; } = null!;
@@ -42,7 +29,7 @@ namespace OmniDibs.Models {
         public override DateTime EndDate { get => _endDate; set { _endDate = value; } }
 
         internal override string GetBookingInfo() {
-            return $"Flight Ticket to {Flight.Destination} on {Flight.Name} {Seat.SeatNumber}: {Seat.Class} cost {Cost}§";
+            return $"Flight Ticket on {Flight.Name}. Service Level {Seat.Class} cost {Cost}§";
         }
 
         internal override float GetCost() {
@@ -50,8 +37,14 @@ namespace OmniDibs.Models {
         }
 
         internal override bool Unbook() {
-            base.Account = null!;
-            DatabaseInterface.UpdateInDatabase(this);
+
+            using (var db = new OmniDibsContext()) {
+                var ticket = db.Bookings.Find(Id);
+                if (ticket != null) {
+                    ticket.Account = null;
+                    db.SaveChanges();
+                }
+            }
             return true;
         }
     }
@@ -69,15 +62,20 @@ namespace OmniDibs.Models {
         public override DateTime EndDate { get => _endDate; set => _endDate = value; }
 
         internal override string GetBookingInfo() {
-            return $"Model {Airplane.Model}, {Airplane.Seats.Count()} seats. Booked {StartDate.Date.ToString("MM-dd")}{(StartDate.Date == EndDate.Date ? " " : " - " +EndDate.Date.ToString("MM-dd"))} Cost: {Cost}§";
+            return $"Model {Airplane.Model}. Booked {StartDate.Date.ToString("yyyy-MM-dd")}{(StartDate.Date == EndDate.Date ? " " : " - " +EndDate.Date.ToString("yyyy-MM-dd"))} Cost: {Cost}§";
         }
 
         internal override float GetCost() {
-            return Cost * (1 + (StartDate.Date - EndDate.Date).Days);
+            return Cost;
         }
 
         internal override bool Unbook() {
-            return DatabaseInterface.RemoveFromDatabase(this);
+            using (var db = new OmniDibsContext()) {
+                var apb = db.Bookings.Find(Id);
+                db.Remove(apb);
+                db.SaveChanges();
+            }
+            return true;
         }
     }
 }
