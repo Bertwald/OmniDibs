@@ -82,7 +82,7 @@ namespace OmniDibs.Pages {
             if (GUI.Confirm("DELETE ACCOUNT")) {
                 using (var db = new OmniDibsContext()) {
                     // Find() felt like a better option, but include is not available as part of find
-                    var account = db.Accounts.Include(x => x.Bookings).Where(x => x.Id ==selectedAccount.Id).First();
+                    var account = db.Accounts.Include(x => x.Bookings).FirstOrDefault(x => x.Id == selectedAccount.Id);
                     if (!account.Bookings.Any()) {
                         db.Accounts.Remove(account);
                         db.SaveChanges();
@@ -114,13 +114,14 @@ namespace OmniDibs.Pages {
             }
             Console.WriteLine("Departure ex:YYYY-MM-DD");
             if (!DateTime.TryParse(Console.ReadLine(), out DateTime departure)) {
-                Console.WriteLine("Incorrect input: departure defaulted to today+30 days");
+                Console.WriteLine("Incorrect input: departure defaulted to today + 30 days");
                 departure = DateTime.Now.AddDays(30);
             }
             Console.WriteLine("Arrival ex:YYYY-MM-DD");
             if (!DateTime.TryParse(Console.ReadLine(), out DateTime arrival)) {
-                Console.WriteLine("Incorrect input: departure defaulted to today+30 days");
-                departure = DateTime.Now.AddDays(30);
+                Console.WriteLine("Incorrect input: arrival defaulted to departure + 4hours");
+                arrival = departure;
+                arrival.AddHours(4);
             }
             Console.WriteLine("Flight Name");
             string name = Console.ReadLine();
@@ -189,8 +190,10 @@ namespace OmniDibs.Pages {
                     float percentage = 100f * (float)flightTicket.Tickets.Where(x => x.Account != null).Count() / (float)flightTicket.Tickets.Count;
                     if (percentage < 20f) {
                         Console.ForegroundColor = ConsoleColor.Red;
-                    } else {
+                    } else if (percentage < 70f) {
                         Console.ForegroundColor = ConsoleColor.Yellow;
+                    } else {
+                        Console.ForegroundColor = ConsoleColor.Green;
                     }
                     Console.WriteLine($"Flight {flightTicket.Name} has {percentage}% Occupation");
                 }

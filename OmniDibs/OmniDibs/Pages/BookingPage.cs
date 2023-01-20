@@ -160,22 +160,24 @@ namespace OmniDibs.Pages {
         }
 
         private static List<int> GetAvailableDaysInMonth(Airplane plane, int monthNumber) {
-            var days = Enumerable.Range(1, DateTime.DaysInMonth(2023, monthNumber));
+            IEnumerable<int> allDaysInMonth = Enumerable.Range(1, DateTime.DaysInMonth(2023, monthNumber));
+            //No days are available from the start
             List<int> availableDays;
             using (var db = new OmniDibsContext()) {
-                var usedByFlight = db.Flights.Where(x => x.Airplane == plane && x.Departure.Month == monthNumber).Select(x => Enumerable.Range(CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.Departure),
+                var daysUsedByFlights = db.Flights.Where(x => x.Airplane == plane && x.Departure.Month == monthNumber).Select(x => Enumerable.Range(CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.Departure),
                                                                            1 + CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.Arrival) -
                                                                            CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.Departure))).ToList();
-                var daysBooked = db.AirplaneBookings.Where(x => x.Airplane == plane && x.StartDate.Month == monthNumber).Select(x => Enumerable.Range(CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.StartDate),
+                var daysPlaneIsBooked = db.AirplaneBookings.Where(x => x.Airplane == plane && x.StartDate.Month == monthNumber).Select(x => Enumerable.Range(CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.StartDate),
                                                                            1 + CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.EndDate) -
                                                                            CultureInfo.InvariantCulture.Calendar.GetDayOfMonth(x.StartDate))).ToList();
-                foreach (var range in usedByFlight) {
-                    days = days.Except(range);
+                //Remove all days from the two booking types from the "list" of all days in a month to get the "list" of free days
+                foreach (var range in daysUsedByFlights) {
+                    allDaysInMonth = allDaysInMonth.Except(range);
                 }
-                foreach (var range in daysBooked) {
-                    days = days.Except(range);
+                foreach (var range in daysPlaneIsBooked) {
+                    allDaysInMonth = allDaysInMonth.Except(range);
                 }
-                availableDays = days.ToList();
+                availableDays = allDaysInMonth.ToList();
             }
             return availableDays;
         }
@@ -286,13 +288,13 @@ namespace OmniDibs.Pages {
             return tickets;
         }
 
-        private Flight? SelectFlight(List<Flight> flights, Country destination) {
-            flights = flights.Where(f => f.Destination == destination).ToList();
+        private static Flight? SelectFlight(List<Flight> flights, Country destination) {
+            flights = flights.Where(f => f.Destination.CountryName == destination.CountryName).ToList();
             return ItemSelector<Flight>.SelectItemFromList(flights);
         }
 
-        private Country? ChooseAvailableDestination(List<Flight> flights) {
-            List<Country> destinations = flights.Select(f => f.Destination).Distinct().ToList();
+        private static Country? ChooseAvailableDestination(List<Flight> flights) {
+            List<Country> destinations = flights.Select(f => f.Destination).DistinctBy(x => x.CountryName).ToList();
             if (destinations.Any()) {
                 return ItemSelector<Country>.SelectItemFromList(destinations);
             }
