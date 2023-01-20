@@ -91,7 +91,7 @@ namespace OmniDibs.UI {
 
         internal static bool Confirm(string action) {
             GUI.ClearWindow();
-            var answer = ItemSelector<string>.SelectItemFromList(new List<string> {"YES", "NO" }, "Confirm");
+            var answer = ItemSelector<string>.SelectItemFromList(new List<string> {"YES", "NO" }, $"{action} Confirm");
             if(answer == "YES") {
                 return true;
             }

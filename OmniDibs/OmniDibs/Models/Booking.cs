@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OmniDibs.Models {
@@ -39,8 +40,9 @@ namespace OmniDibs.Models {
         internal override bool Unbook() {
 
             using (var db = new OmniDibsContext()) {
-                var ticket = db.Bookings.Find(Id);
-                if (ticket != null) {
+                var ticket = db.Bookings.Where(x => x.Id == this.Id).Include(x => x.Account).ThenInclude(x => x.Bookings).First();
+                if (ticket != null) {             
+                    ticket.Account.Bookings.Remove(ticket);
                     ticket.Account = null;
                     db.SaveChanges();
                 }
@@ -62,7 +64,9 @@ namespace OmniDibs.Models {
         public override DateTime EndDate { get => _endDate; set => _endDate = value; }
 
         internal override string GetBookingInfo() {
-            return $"Model {Airplane.Model}. Booked {StartDate.Date:yyyy-MM-dd}{(StartDate.Date == EndDate.Date ? " " : $" - {EndDate.Date:yyyy-MM-dd}")} Cost: {Cost}§";
+            return $"Model {Airplane.Model}. " +
+                $"Booked {StartDate.Date:yyyy-MM-dd}{(StartDate.Date == EndDate.Date ? " " : $" - {EndDate.Date:yyyy-MM-dd}")} " +
+                $"Cost: {Cost}§";
         }
 
         internal override float GetCost() {
