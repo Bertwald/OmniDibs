@@ -15,7 +15,7 @@ namespace OmniDibs.Data {
             foreach (Seat seat in flight.Airplane.Seats) {
                 tickets.Add(new() { Flight = flight, 
                                     Seat = seat, 
-                                    Cost = flight.BaseCost * (1.0f - (0.2f * (int)seat.Class)), 
+                                    Cost = (float)Math.Round(flight.BaseCost * (1.0f - (0.2f * (int)seat.Class)), 0), 
                                     StartDate = flight.Departure, 
                                     EndDate = flight.Arrival });
             }
