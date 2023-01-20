@@ -81,7 +81,8 @@ namespace OmniDibs.Pages {
             Account selectedAccount = ItemSelector<Account>.SelectItemFromList(accounts);
             if (GUI.Confirm("DELETE ACCOUNT")) {
                 using (var db = new OmniDibsContext()) {
-                    var account = db.Accounts.Find(selectedAccount.Id);
+                    // Find() felt like a better option, but include is not available as part of find
+                    var account = db.Accounts.Include(x => x.Bookings).Where(x => x.Id ==selectedAccount.Id).First();
                     if (!account.Bookings.Any()) {
                         db.Accounts.Remove(account);
                         db.SaveChanges();
