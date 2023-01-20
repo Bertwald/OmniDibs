@@ -1,5 +1,6 @@
 ﻿using OmniDibs.Interfaces;
 using OmniDibs.Models;
+using OmniDibs.UI;
 
 namespace OmniDibs.Menus
 {
@@ -14,7 +15,7 @@ namespace OmniDibs.Menus
         private ConsoleColor _defaultColor = ConsoleColor.DarkGray;
         protected DefaultMenu(string title) {
             _title = title;
-            string[] choices = System.Enum.GetNames(typeof(E));
+            string[] choices = Enum.GetNames(typeof(E));
             choices = choices.Select(x => x.Replace('_', ' ')).ToArray();
             _maxLength = Math.Max(choices.Max(s => s.Length), title.Length);
             _length = _maxLength + 8;
@@ -48,7 +49,7 @@ namespace OmniDibs.Menus
             ReturnType @return = ReturnType.CONTINUE;
             while (@return == ReturnType.CONTINUE) {
                 Console.SetCursorPosition(0, 0);
-                Console.Clear();
+                GUI.ClearWindow();
                 DisplayMenu();
                 @return = PerformAction(Console.ReadKey(true).Key);
             }

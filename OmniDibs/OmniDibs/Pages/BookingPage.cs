@@ -142,7 +142,7 @@ namespace OmniDibs.Pages {
             }
         }
 
-        private (DateTime start, DateTime end) ChooseDate(Airplane plane) {
+        private static (DateTime start, DateTime end) ChooseDate(Airplane plane) {
             int startDay, endDay;
             //There is a 13th "null" month in MonthNames array, we only need 12 here
             List<string> months = (DateTimeFormatInfo.InvariantInfo.MonthNames).Take(12).ToList();
@@ -202,7 +202,7 @@ namespace OmniDibs.Pages {
             return startDay;
         }
 
-        private Airplane ChoosePlane() {
+        private static Airplane ChoosePlane() {
             Airplane chosenPlane = ItemSelector<Airplane>.SelectDatabaseItemFromMenu();
             return chosenPlane;
         }
@@ -262,7 +262,7 @@ namespace OmniDibs.Pages {
             return newTicket;
         }
 
-        private List<Ticket> SelectSeatOptions(Flight flight) {
+        private static List<Ticket> SelectSeatOptions(Flight flight) {
             IndexMenu indexMenu = new("Select Standard",
                                        Enum.GetNames(typeof(Standard)).ToList(),
                                        0);

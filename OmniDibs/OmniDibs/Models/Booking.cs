@@ -62,7 +62,7 @@ namespace OmniDibs.Models {
         public override DateTime EndDate { get => _endDate; set => _endDate = value; }
 
         internal override string GetBookingInfo() {
-            return $"Model {Airplane.Model}. Booked {StartDate.Date.ToString("yyyy-MM-dd")}{(StartDate.Date == EndDate.Date ? " " : " - " +EndDate.Date.ToString("yyyy-MM-dd"))} Cost: {Cost}§";
+            return $"Model {Airplane.Model}. Booked {StartDate.Date:yyyy-MM-dd}{(StartDate.Date == EndDate.Date ? " " : $" - {EndDate.Date:yyyy-MM-dd}")} Cost: {Cost}§";
         }
 
         internal override float GetCost() {

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+/*
 namespace OmniDibs.Menus
 {
     public class MainMenu : IMenu<Models.Privileges> {
@@ -71,7 +71,7 @@ namespace OmniDibs.Menus
         }
     }
 }
-
+*/
 
 
 //private static void ShowNumberedActionsMenu(string title, List<string> actions, int highlight = -1, ConsoleColor highlightColor = ConsoleColor.Gray) {

@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace OmniDibs.UI {
     internal class InputField {
-        private int _positionX, _positionY;
-        private string _title;
-        private int _length;
-        private ConsoleColor _bordercolor;
-        private bool _isHidden;
+        private readonly int _positionX;
+        private readonly int _positionY;
+        private readonly string _title;
+        private readonly int _length;
+        private readonly ConsoleColor _bordercolor;
+        private readonly bool _isHidden;
         private string? _inputpattern;
 
         internal InputField(string title, int x = 0, int y=0, int length = 12, ConsoleColor bordercolor = ConsoleColor.Blue, bool isHidden = false) {

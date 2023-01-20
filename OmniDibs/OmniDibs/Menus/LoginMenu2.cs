@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-
+/*
 namespace OmniDibs.Menus {
     internal class LoginMenu2 : DefaultMenu<LoginOptions> {
         internal LoginMenu2(string title = "LoginMenu") : base(title) {
@@ -20,3 +20,4 @@ namespace OmniDibs.Menus {
         }
     }
 }
+*/

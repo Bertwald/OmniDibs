@@ -98,27 +98,26 @@ namespace OmniDibs.Pages {
             return typeof(Account).GetProperties().Select(x => x.Name).ToList();
         }
 
-        private ReturnType ConfigureBusinessObjects() {
+        private static ReturnType ConfigureBusinessObjects() {
+            GUI.ClearWindow();
             Console.WriteLine("OmniDibs 0.92 Only supports handling of Flights, Upgrade to our Premium Product 1.02");
             Console.WriteLine("To Access our full set of functionality");
+            GUI.Delay();
             //case create Flight
             int plane = ItemSelector<Airplane>.SelectDatabaseItemFromMenu().Id;
             int origin = ItemSelector<Country>.SelectDatabaseItemFromMenu().Id;
             int destination = ItemSelector<Country>.SelectDatabaseItemFromMenu().Id;
-            float basecost;
-            DateTime departure;
-            DateTime arrival;
             Console.WriteLine("Base Cost of flight");
-            if (!float.TryParse(Console.ReadLine(), out basecost)) {
+            if (!float.TryParse(Console.ReadLine(), out float basecost)) {
                 basecost = 0.0f;
             }
             Console.WriteLine("Departure ex:YYYY-MM-DD");
-            if (!DateTime.TryParse(Console.ReadLine(), out departure)) {
+            if (!DateTime.TryParse(Console.ReadLine(), out DateTime departure)) {
                 Console.WriteLine("Incorrect input: departure defaulted to today+30 days");
                 departure = DateTime.Now.AddDays(30);
             }
             Console.WriteLine("Arrival ex:YYYY-MM-DD");
-            if (!DateTime.TryParse(Console.ReadLine(), out arrival)) {
+            if (!DateTime.TryParse(Console.ReadLine(), out DateTime arrival)) {
                 Console.WriteLine("Incorrect input: departure defaulted to today+30 days");
                 departure = DateTime.Now.AddDays(30);
             }
@@ -144,7 +143,7 @@ namespace OmniDibs.Pages {
             return ReturnType.CONTINUE;
         }
 
-        private ReturnType ShowCustomerStatistics() {
+        private static ReturnType ShowCustomerStatistics() {
             GUI.ClearWindow();
             using (var db = new OmniDibsContext()) {
                 var accountBookings = db.Bookings
@@ -173,7 +172,7 @@ namespace OmniDibs.Pages {
                                 .Take(3);
                 Console.WriteLine("Our most well filled purses");
                 foreach (var accountMax in accountMaxes) {
-                    Console.WriteLine($"{accountMax.userName} has a charter valued at {accountMax.userMax}$");
+                    Console.WriteLine($"{accountMax.userName} has an expensive charter: {accountMax.userMax}");
                 }
                 Console.WriteLine();
                 GUI.Delay();
@@ -181,7 +180,7 @@ namespace OmniDibs.Pages {
             return ReturnType.CONTINUE;
         }
 
-        private ReturnType ShowBookingStatistics() {
+        private static ReturnType ShowBookingStatistics() {
             GUI.ClearWindow();
             using (var db = new OmniDibsContext()) {
                 var flightsTickets = db.Flights.Include(x => x.Tickets).ThenInclude(x => x.Account).OrderBy(x => x.Departure).Take(10).ToList();
