@@ -40,7 +40,11 @@ namespace OmniDibs.Data {
                 "Ruben",
                 "Helen",
                 "Helena",
-                "Isak"};
+                "Isak",
+                "Ulf",
+                "Svea",
+                "Ida"
+        };
         private static readonly string[] lastnames = {
                 "Andersson",
                 "Johansson",
@@ -55,7 +59,12 @@ namespace OmniDibs.Data {
                 "Pettersson",
                 "Jonsson",
                 "Jansson",
-                "Hansson"
+                "Hansson",
+                "SandBerg",
+                "Falk",
+                "Grip",
+                "Ehn",
+                "Bernadotte"
         };
         private static readonly string[] domains = {
             "@gmail.com",

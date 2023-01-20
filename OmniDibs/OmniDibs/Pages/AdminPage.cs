@@ -149,7 +149,7 @@ namespace OmniDibs.Pages {
             GUI.ClearWindow();
             using (var db = new OmniDibsContext()) {
                 var accountBookings = db.Bookings
-                                        .Where(x => x.Account != null)
+                                        .Where(x => x.Account != null && x is Ticket)
                                         .Include(x => x.Account)
                                         .GroupBy(x => x.Account.UserName)
                                         .Select(group => new { accountName = group.Key, nrBookings = group.Sum(x => 1) })

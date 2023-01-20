@@ -1,9 +1,4 @@
 ﻿using OmniDibs.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OmniDibs.Data {
     internal class PersonManager {
@@ -16,22 +11,13 @@ namespace OmniDibs.Data {
                     new () { BirthDate = "19831112-1367", FirstName = "Ida", LastName = "Spjut", MailAdress = "idaspjut@hotmail.com"},
                     new () { BirthDate = "19921220-1538", FirstName = "Felix", LastName = "Persson", MailAdress = "felixp@gmail.com"},
                     new () { BirthDate = "19810112-1284", FirstName = "Christina", LastName = "Holm", MailAdress = "c.holm@hotmail.com"},
-                    PersonGenerator.GetPerson(),
-                    PersonGenerator.GetPerson(),
-                    PersonGenerator.GetPerson(),
-                    PersonGenerator.GetPerson(),
-                    PersonGenerator.GetPerson(),
-                    PersonGenerator.GetPerson(),
-                    PersonGenerator.GetPerson(),
-                    PersonGenerator.GetPerson(), 
-                    PersonGenerator.GetPerson(),
-                    PersonGenerator.GetPerson(),
-                    PersonGenerator.GetPerson(),
-                    PersonGenerator.GetPerson(),
-                    new () { BirthDate = "19481232-1284", FirstName = "Rune", LastName = "Boss", MailAdress = "BigBoss@TheBoss.is", Alias = "El Bosso"},
                 };
             }
-
+            var persons = new List<Person>();
+            for (int n = 0; n < 300; n++) {
+                Persons.Add(PersonGenerator.GetPerson());
+            }
+            Persons.Add(new Person() { BirthDate = "19481232-1284", FirstName = "Rune", LastName = "Boss", MailAdress = "BigBoss@TheBoss.is", Alias = "El Bosso" });
             return Persons;
         }
     }

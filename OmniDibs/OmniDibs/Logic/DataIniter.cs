@@ -4,7 +4,7 @@ using OmniDibs.Models;
 
 namespace OmniDibs.Logic {
     internal class DataIniter {
-        private static Random _random= new Random();
+        private static readonly Random _random= new();
         public static void InitData() {
             List<Person> persons = PersonManager.GetAllPersons();
             List<Country> countries = CountryManager.GetCountries();
@@ -47,12 +47,34 @@ namespace OmniDibs.Logic {
             db.SaveChanges();
         }
         public static void InitTickets() {
-            using var db = new OmniDibsContext();
-            List<Flight> flights = db.Flights.Include(x => x.Airplane).ThenInclude(x => x.Seats).ToList();
-            List<Ticket> tickets = TicketGenerator.GenerateTicketsForFlights(flights);
-            db.AttachRange(flights);
-            db.AddRange(tickets);
-            db.SaveChanges();
+            using (var db = new OmniDibsContext()) {
+                List<Flight> flights = db.Flights.Include(x => x.Airplane).ThenInclude(x => x.Seats).ToList();
+                List<Ticket> tickets = TicketGenerator.GenerateTicketsForFlights(flights);
+                db.AttachRange(flights);
+                db.AddRange(tickets);
+                db.SaveChanges();
+            }
+        }
+        public static void InitTicketBookings() {
+            using (var db = new OmniDibsContext()) {
+                List<Ticket> tickets = db.Tickets.Include(x => x.Account).ToList();
+                List<Flight> flights = db.Flights.ToList();
+                List<Account> accounts = db.Accounts.Include(x => x.Bookings).ToList();
+                foreach (var account in accounts) {
+                    int numberofTickets = _random.Next(0,4);
+                    for(int ticketNumber = 0; ticketNumber < numberofTickets; ticketNumber++) {
+                        int flightId = flights.Select(x => x.Id).ToList().OrderBy(x => _random.Next()).First();
+                        var newticket = tickets.Where(x => x.Account == null && x.Flight.Id == flightId).FirstOrDefault();
+                        if (newticket != null) {
+                            newticket.Account = account;
+                            account.Bookings.Add(newticket);
+                        }
+                    }
+                }
+                db.UpdateRange(tickets);
+                db.UpdateRange(accounts);
+                db.SaveChanges();
+            }
         }
 
         public static void InitPlanes() {
