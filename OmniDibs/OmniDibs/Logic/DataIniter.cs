@@ -33,8 +33,16 @@ namespace OmniDibs.Logic {
                 UserName = "BigBoss",
                 Password = "Admin"
             };
+            Account user = new Account() {
+                Person = persons.Last(),
+                Privileges = Privileges.USER | Privileges.UPDATE | Privileges.READ,
+                UserName = "User",
+                Password = "User"
+            };
+            db.Add(user);
             db.Add(admin);
             persons.Last().Accounts.Add(admin);
+            persons.Last().Accounts.Add(user);
 
             db.SaveChanges();
         }
