@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace OmniDibs.Pages {
     internal class AdminPage : DefaultMenu<AdminAlternatives>, IRunnable {
-        static readonly string s_connString = "data source=.\\SQLEXPRESS; initial catalog=OmniDibs; persist security info=True; Integrated Security=True";
+        static readonly string s_connString = "Server=tcp:thla.database.windows.net,1433;Initial Catalog=THLA;Persist Security Info=False;User ID=thlaAdmin;Password=Admin_thla;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
         private Account _account;
         internal AdminPage(Account account) : base("AdminPage") { _account = account; }
 

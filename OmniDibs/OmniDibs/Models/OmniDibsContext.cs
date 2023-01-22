@@ -14,7 +14,7 @@ namespace OmniDibs.Models {
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-            optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=OmniDibs;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer(@"Server=tcp:thla.database.windows.net,1433;Initial Catalog=THLA;Persist Security Info=False;User ID=thlaAdmin;Password=Admin_thla;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
