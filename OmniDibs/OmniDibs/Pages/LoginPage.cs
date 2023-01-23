@@ -24,8 +24,8 @@ namespace OmniDibs.Pages {
         public ReturnType Run() {
             while (true) {
                 Console.Clear();
-                GUI.printWindow("|OmniDibs System Login|", 0, 0, 100, 20);
-                GUI.printLogo(17, 2);
+                GUI.PrintWindow("|OmniDibs System Login|", 0, 0, 100, 20);
+                GUI.PrintLogo(17, 2);
                 _userField.PrintField();
                 _passwordField.PrintField();
                 string username = _userField.GetContinousInput();

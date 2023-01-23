@@ -2,7 +2,7 @@
 
 namespace OmniDibs.Data {
     internal class PersonManager {
-        public static List<Person> Persons { get; set; }
+        public static List<Person> Persons { get; set; } = new();
         public static List<Person> GetAllPersons() {
             if (Persons == null || !Persons.Any()) {
                 Persons = new List<Person>() {

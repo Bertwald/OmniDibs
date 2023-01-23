@@ -9,8 +9,8 @@ namespace OmniDibs.Models {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string Name { get; internal set; }
-        public string Model { get; internal set; }
+        public string Name { get; internal set; } = null!;
+        public string Model { get; internal set; } = null!;
         public ISet<Seat> Seats { get; internal set; }
 
         public override string ToString() {

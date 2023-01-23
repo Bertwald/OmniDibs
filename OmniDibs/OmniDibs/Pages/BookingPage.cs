@@ -30,7 +30,7 @@ namespace OmniDibs.Pages {
 
             while (true) {
                 GUI.ClearWindow();
-                GUI.printWindow($"| {_title} |", 0, 0, 100, 20);
+                GUI.PrintWindow($"| {_title} |", 0, 0, 100, 20);
                 return RunMenu();
             }
         }
@@ -53,7 +53,7 @@ namespace OmniDibs.Pages {
             IEnumerable<string> accountFields = new List<string> { "UserName", "Privileges" };
             IEnumerable<string> personFields = new List<string> { "FirstName", "LastName", "Country", "MailAdress" };
             GUI.ClearWindow();
-            GUI.printWindow($"| Account Details |", 0, 0, 100, 25);
+            GUI.PrintWindow($"| Account Details |", 0, 0, 100, 25);
             var accountDictionary = GetPropertyPairs<Account>(_account);
             var personDictionary = GetPropertyPairs<Person>(_account.Person);
             var accountResult = GetMatches<string>(accountFields, accountDictionary);
@@ -86,7 +86,7 @@ namespace OmniDibs.Pages {
         private ReturnType DisplayBookings() {
             var bookings = DatabaseFacade.GetBookings(_account);
             GUI.ClearWindow();
-            GUI.printWindow($"| Account Details |", 0, 0, 100, 25);
+            GUI.PrintWindow($"| Account Details |", 0, 0, 100, 25);
             Console.SetCursorPosition(3, 3);
             GUI.PrintList(bookings.Any() ?
                           bookings.Select(x => x.GetBookingInfo()).ToList()! :

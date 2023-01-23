@@ -1,16 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
-using OmniDibs.Data;
+﻿using OmniDibs.Data;
 using OmniDibs.Interfaces;
 using OmniDibs.Logic;
 using OmniDibs.Menus;
 using OmniDibs.Models;
 using OmniDibs.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace OmniDibs.Pages {
     internal class RegisterPage : IRunnable {
@@ -39,7 +33,7 @@ namespace OmniDibs.Pages {
         }
         public ReturnType Run() {
             Console.Clear();
-            GUI.printWindow("|OmniDibs Account Creation Step 1/2|", 0, 0, 100, 20);
+            GUI.PrintWindow("|OmniDibs Account Creation Step 1/2|", 0, 0, 100, 20);
             _userField.PrintField();
             _passwordField.PrintField();
             _passwordField2.PrintField();
@@ -78,10 +72,10 @@ namespace OmniDibs.Pages {
 
         private static void ClearWindow() {
             Console.Clear();
-            GUI.printWindow("|OmniDibs Account Creation Step 1/2|", 0, 0, 100, 20);
+            GUI.PrintWindow("|OmniDibs Account Creation Step 1/2|", 0, 0, 100, 20);
         }
 
-        private bool VerifyIdNumber(string idNumber) {
+        private static bool VerifyIdNumber(string idNumber) {
             return VerifyIdLength(idNumber) && VerifyIdFormat(idNumber) && VerifyIdChecksum(idNumber) && VerifyIdDate(idNumber);
         }
 

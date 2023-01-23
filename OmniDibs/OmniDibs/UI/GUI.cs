@@ -12,7 +12,7 @@ namespace OmniDibs.UI {
                 " #     #  #     #  #    ##   #          #     #   #   #     #  #     # ",
                 " #######  #     #  #     #  ###         ######   ###  ######    #####  "
         };
-        internal static void printLogo(int positionX, int positionY) {
+        internal static void PrintLogo(int positionX, int positionY) {
             Console.SetCursorPosition(positionX, positionY);
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -24,7 +24,7 @@ namespace OmniDibs.UI {
 
         }
 
-        internal static void printWindow(string title, int positionX, int positionY, int width, int height, ConsoleColor color = ConsoleColor.White) {
+        internal static void PrintWindow(string title, int positionX, int positionY, int width, int height, ConsoleColor color = ConsoleColor.White) {
             Console.ForegroundColor = color;
             Console.SetCursorPosition(positionX, positionY);
             Console.WriteLine('╔' + new string('═', (width - title.Length + 2) / 2) + title + new string('═', width - title.Length + 2 - (width - title.Length + 2) / 2) + '╗');
@@ -89,7 +89,7 @@ namespace OmniDibs.UI {
             Console.ResetColor();
         }
 
-        internal static bool Confirm(string action) {
+        internal static bool ConfirmAction(string action) {
             GUI.ClearWindow();
             var answer = ItemSelector<string>.SelectItemFromList(new List<string> {"YES", "NO" }, $"{action} Confirm");
             if(answer == "YES") {

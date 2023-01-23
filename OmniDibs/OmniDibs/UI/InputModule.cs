@@ -59,17 +59,5 @@ namespace OmniDibs.UI {
             }
         }
         
-        //internal static Command GetCommand() {
-        //    ConsoleKey key = Console.ReadKey(true).Key;
-        //    return KeyToCommand(key);
-        //}
-        //internal static Command KeyToCommand(ConsoleKey key) => key switch {
-        //    ConsoleKey.P => Command.Park,
-        //    ConsoleKey.U => Command.Unpark,
-        //    ConsoleKey.Q => Command.Quit,
-        //    ConsoleKey.A => Command.ToggleInput,
-        //    _ => Command.DoNothing,
-        //};
-
     }
 }

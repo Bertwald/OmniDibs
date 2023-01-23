@@ -76,8 +76,10 @@ namespace OmniDibs.Models {
         internal override bool Unbook() {
             using (var db = new OmniDibsContext()) {
                 var apb = db.Bookings.Find(Id);
-                db.Remove(apb);
-                db.SaveChanges();
+                if (apb != null) {
+                    db.Remove(apb);
+                    db.SaveChanges();
+                }
             }
             return true;
         }

@@ -10,13 +10,13 @@ using Microsoft.EntityFrameworkCore;
 namespace OmniDibs.Pages {
     internal class AdminPage : DefaultMenu<AdminAlternatives>, IRunnable {
         static readonly string s_connString = "Server=tcp:thla.database.windows.net,1433;Initial Catalog=THLA;Persist Security Info=False;User ID=thlaAdmin;Password=Admin_thla;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-        private Account _account;
+        private readonly Account _account;
         internal AdminPage(Account account) : base("AdminPage") { _account = account; }
 
         public ReturnType Run() {
             while (true) {
                 GUI.ClearWindow();
-                GUI.printWindow($"| {_title} |", 0, 0, 100, 20);
+                GUI.PrintWindow($"| {_title} |", 0, 0, 100, 20);
                 return RunMenu();
             }
         }
@@ -30,7 +30,7 @@ namespace OmniDibs.Pages {
             _ => ReturnType.CONTINUE
         };
 
-        private ReturnType HandleAccounts() {
+        private static ReturnType HandleAccounts() {
             string action = ItemSelector<string>.SelectItemFromList(new List<string>() { "Delete Account", "Alter Account", "Back" }, "Account Actions");
             return action switch {
                 "Delete Account" => DeleteAccount(),
@@ -40,7 +40,7 @@ namespace OmniDibs.Pages {
             };
         }
 
-        private ReturnType AlterAccount() {
+        private static ReturnType AlterAccount() {
             List<Account> accounts = GetAccounts();
             if (!accounts.Any()) {
                 return ReturnType.CONTINUE;
@@ -51,7 +51,7 @@ namespace OmniDibs.Pages {
             string chosenField = ItemSelector<string>.SelectItemFromList(fields, "Column");
             Console.WriteLine("Input new value");
             string newVal = Console.ReadLine();
-            if (GUI.Confirm("ALTER")) {
+            if (GUI.ConfirmAction("ALTER")) {
                 AlterItem(selectedAccount.Id, "Accounts", chosenField, newVal);
             }
             return ReturnType.CONTINUE;
@@ -79,7 +79,7 @@ namespace OmniDibs.Pages {
                 return ReturnType.CONTINUE;
             }
             Account selectedAccount = ItemSelector<Account>.SelectItemFromList(accounts);
-            if (GUI.Confirm("DELETE ACCOUNT")) {
+            if (GUI.ConfirmAction("DELETE ACCOUNT")) {
                 using (var db = new OmniDibsContext()) {
                     // Find() felt like a better option, but include is not available as part of find
                     var account = db.Accounts.Include(x => x.Bookings).FirstOrDefault(x => x.Id == selectedAccount.Id);
@@ -95,7 +95,7 @@ namespace OmniDibs.Pages {
             return ReturnType.CONTINUE;
         }
 
-        private List<string> GetAccountFieldNames() {
+        private static List<string> GetAccountFieldNames() {
             return typeof(Account).GetProperties().Select(x => x.Name).ToList();
         }
 
@@ -125,7 +125,7 @@ namespace OmniDibs.Pages {
             }
             Console.WriteLine("Flight Name");
             string name = Console.ReadLine();
-            if (GUI.Confirm("Create new Flight")) {
+            if (GUI.ConfirmAction("Create new Flight")) {
                 using (var db = new OmniDibsContext()) {
                     var airplane = db.Airplanes.Find(plane);
                     var o = db.Countries.Find(origin);
@@ -210,7 +210,7 @@ namespace OmniDibs.Pages {
         }
 
 
-        public static bool AlterItem(int id, string tableName, string column, string newValue) {
+        private static bool AlterItem(int id, string tableName, string column, string newValue) {
             int affectedRow = 0;
 
             string sql = $"UPDATE [{tableName}] SET [{column}] = '{newValue}' WHERE Id = {id}";
